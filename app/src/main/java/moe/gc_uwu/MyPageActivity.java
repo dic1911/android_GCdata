@@ -142,7 +142,7 @@ public class MyPageActivity extends AppCompatActivity
                     if(detail.isNull("simple_result_data")){ s = blk; }else{ s = detail.getJSONObject("simple_result_data"); }
                     if(detail.isNull("normal_result_data")){ n = blk; }else{ n = detail.getJSONObject("normal_result_data"); }
                     if(detail.isNull("hard_result_data")){ h = blk; }else{ h = detail.getJSONObject("hard_result_data"); }
-                    if(!hasEx && detail.isNull("extra_result_data")){ e = blk; }else{ e = detail.getJSONObject("extra_result_data"); }
+                    if(!hasEx || detail.isNull("extra_result_data")){ e = blk; }else{ e = detail.getJSONObject("extra_result_data"); }
 
                     if(hasEx){
                         song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
