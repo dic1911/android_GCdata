@@ -55,7 +55,7 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
         spinner = (Spinner) findViewById(R.id.spinner);
         spinner.setOnItemSelectedListener(this);
         //Creating the ArrayAdapter instance having the country list
-        ArrayAdapter aa = new ArrayAdapter(this,android.R.layout.simple_spinner_item, pages);
+        ArrayAdapter aa = new ArrayAdapter(this,R.layout.global_rank_spinner, pages);
         aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         //Setting the ArrayAdapter data on the Spinner
         spinner.setAdapter(aa);
