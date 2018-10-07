@@ -6,4 +6,10 @@
         android:orderInCategory="100"
         android:title="@string/action_sign_in"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_score_backup"
+        android:orderInCategory="100"
+        android:title="@string/action_save_score"
+        app:showAsAction="never" />
 </menu>

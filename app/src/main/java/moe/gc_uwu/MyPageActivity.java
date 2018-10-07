@@ -1,6 +1,7 @@
 package moe.gc_uwu;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,8 +32,11 @@ import org.jsoup.nodes.Document;*/
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.CookieManager;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MyPageActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +47,7 @@ public class MyPageActivity extends AppCompatActivity
     TextView top;
     Boolean ready;
     static Boolean alreadyLoggedIn;
+    static Boolean dataFetched;
     int mode;
 
     mypageThread thread;
@@ -76,6 +81,7 @@ public class MyPageActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         fetch = (Button) findViewById(R.id.btn_fetch);
         ready = false;
+        dataFetched = false;
         if(alreadyLoggedIn == null)
             alreadyLoggedIn = false;
         listView = (ListView) findViewById(R.id.score_list);
@@ -254,9 +260,9 @@ public class MyPageActivity extends AppCompatActivity
                             e.printStackTrace();
                         }
 
-
                     }
                     //alreadyLoggedIn = true;
+                    dataFetched = true;
                     return true;
                 }
                     return false;
@@ -270,12 +276,6 @@ public class MyPageActivity extends AppCompatActivity
         super.onResume();
         cardID = login.getString("cardID", "");
         passwd = login.getString("passwd", "");
-
-        if(cardID != "" && passwd != ""){
-            fetch.setVisibility(View.VISIBLE);
-            if(!alreadyLoggedIn)
-                top.setText("\n\n" + cardID.substring(0,12) + "****");
-        }
     }
 
     @Override
@@ -307,6 +307,18 @@ public class MyPageActivity extends AppCompatActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_score_backup) {
+            if(!dataFetched || mode == 0){
+                Toast.makeText(MyPageActivity.this, "Fetch song list before back things up",Toast.LENGTH_LONG).show();
+            }else {
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD_HHmmss");
+                File file = new File(getExternalFilesDir(null), "gcdata_score-" + sdf.format(cal.getTime()) + ".csv");
+                scoreBackupThread bkpThread = new scoreBackupThread(this, file.getAbsolutePath(), cookieManager, musicList);
+                bkpThread.start();
+                Toast.makeText(MyPageActivity.this, "Backing up all the scores to local storage..", Toast.LENGTH_LONG).show();
+                Toast.makeText(MyPageActivity.this, "Target: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
