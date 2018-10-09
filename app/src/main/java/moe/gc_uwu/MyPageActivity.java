@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -173,94 +174,13 @@ public class MyPageActivity extends AppCompatActivity
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && ready){
                     top.setText("\n\nLoading...");
-                    if(mode == 0) {
-                        // grab basic stat
-                        if(!alreadyLoggedIn) {
-                            thread = new mypageThread(cardID, passwd);
-                            thread.start();
-                            try {
-                                thread.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-
-                            }
-                            cookieManager = thread.getCookieManager();
-                        }else{
-                            thread = new mypageThread("https://mypage.groovecoaster.jp/sp/json/player_data.php", cookieManager);
-                            try {
-                                thread.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        //top.append("\n" + thread.getResult());
-                        String tmp = "";
-
-                        try {
-                            String total_stage = thread.getStat().getJSONObject("stage").getString("all");
-                            tmp += ("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
-                            tmp += ("Score: " + thread.getStat().getJSONObject("player_data").getString("total_score") + "\n");
-                            tmp += ("Avg. Score: " + thread.getStat().getJSONObject("player_data").getString("average_score") + "\n");
-                            tmp += ("Played Songs: " + thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
-                            tmp += (thread.getStat().getJSONObject("player_data").getString("total_music") + "\n");
-                            tmp += ("Rank: " + thread.getStat().getJSONObject("player_data").getString("rank") + "\n");
-                            tmp += ("Avatar: " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
-                            tmp += ("Title: " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
-                            tmp += ("Trophy: " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
-                            tmp += ("Trophy Rank: " + thread.getStat().getJSONObject("player_data").getString("trophy_rank") + "\n\n");
-                            tmp += ("Cleared: " + thread.getStat().getJSONObject("stage").getString("clear") + " / " + total_stage + "\n");
-                            tmp += ("No Miss: " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
-                            tmp += ("Full Chain: " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
-                            tmp += ("Perfect: " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
-                            tmp += ("Rank S: " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
-                            tmp += ("Rank S+: " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
-                            tmp += ("Rank S++: " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
-                            top.setText(tmp);
-                        } catch (Exception e) {
-                            Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?",Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
+                    new AsyncGrabData().execute(mode);
+                    /*if(mode == 0) {
+                        new AsyncGrabData().execute(0);
                     }else if(mode == 1){
                         // grab music list
-                        if(!alreadyLoggedIn) {
-                            thread = new mypageThread("https://mypage.groovecoaster.jp/sp/json/music_list.php", cardID, passwd);
-                            thread.start();
-                            scoreData = new ArrayList<>();
-                            musicList = new ArrayList<>();
-                            try {
-                                thread.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            cookieManager = thread.getCookieManager();
-                        }else{
-                            thread = new mypageThread("https://mypage.groovecoaster.jp/sp/json/music_list.php", cookieManager);
-                            try {
-                                thread.join();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        String tmp;
-                        try{
-                            JSONArray songs = thread.getStat().getJSONArray("music_list");
-                            int len = songs.length();
-                            for(int i=0; i<len; i++){
-                                musicList.add(new musicTemplate(songs.getJSONObject(i).getString("music_id"),
-                                        songs.getJSONObject(i).getString("music_title")));
-                            }
-                            adapter = new songListAdapter(musicList, getApplicationContext());
-                            listView.setAdapter(adapter);
-
-                            top.setVisibility(View.GONE);
-                            listView.setVisibility(View.VISIBLE);
-                        }catch(Exception e){
-                            Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?",Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
-
-                    }
+                        new AsyncGrabData().execute(1);
+                    }*/
                     //alreadyLoggedIn = true;
                     dataFetched = true;
                     return true;
@@ -308,16 +228,13 @@ public class MyPageActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         } else if (id == R.id.action_score_backup) {
+            // todo: show the progress somewhere on screen
             if(!dataFetched || mode == 0){
                 Toast.makeText(MyPageActivity.this, "Fetch song list before back things up",Toast.LENGTH_LONG).show();
             }else {
-                Calendar cal = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD_HHmmss");
-                File file = new File(getExternalFilesDir(null), "gcdata_score-" + sdf.format(cal.getTime()) + ".csv");
-                scoreBackupThread bkpThread = new scoreBackupThread(this, file.getAbsolutePath(), cookieManager, musicList);
-                bkpThread.start();
                 Toast.makeText(MyPageActivity.this, "Backing up all the scores to local storage..", Toast.LENGTH_LONG).show();
-                Toast.makeText(MyPageActivity.this, "Target: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MyPageActivity.this, "Dir: (STORAGE)/Android/data/moe.gc_uwu/", Toast.LENGTH_LONG).show();
+                new AsyncGrabData().execute(8);
             }
         }
 
@@ -353,5 +270,125 @@ public class MyPageActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private class AsyncGrabData extends AsyncTask<Integer, Void, String> {
+
+        StringBuilder tmp;
+        boolean backupF;
+
+        @Override
+        protected String doInBackground(Integer... params) {
+            backupF = false;
+            if(params[0] == 0) {
+                tmp = new StringBuilder();
+
+                // grab basic stat
+                thread = new mypageThread(cardID, passwd);
+                thread.start();
+            } else if(params[0] == 1) {
+                // grab music list
+                String listUrl = "https://mypage.groovecoaster.jp/sp/json/music_list.php";
+                if (!alreadyLoggedIn) {
+                    thread = new mypageThread(listUrl, cardID, passwd);
+                    thread.start();
+                    scoreData = new ArrayList<>();
+                    musicList = new ArrayList<>();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    cookieManager = thread.getCookieManager();
+                } else {
+                    thread = new mypageThread(listUrl, cookieManager);
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                try {
+                    JSONArray songs = thread.getStat().getJSONArray("music_list");
+                    int len = songs.length();
+                    for (int i = 0; i < len; i++) {
+                        musicList.add(new musicTemplate(songs.getJSONObject(i).getString("music_id"),
+                                songs.getJSONObject(i).getString("music_title")));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?", Toast.LENGTH_LONG).show();
+                }
+            } else if(params[0] == 8) {
+                Calendar cal = Calendar.getInstance();
+                SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD_HHmmss");
+                File file = new File(getExternalFilesDir(null), "gcdata_score-" + sdf.format(cal.getTime()) + ".csv");
+                scoreBackupThread bkpThread = new scoreBackupThread(MyPageActivity.this, file.getAbsolutePath(), cookieManager, musicList);
+                bkpThread.start();
+                try {
+                    bkpThread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                backupF = true;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try{
+                if(mode == 0){
+                    try {
+                        thread.join();
+
+                        String total_stage = thread.getStat().getJSONObject("stage").getString("all");
+                        tmp.append("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
+                        tmp.append("Score: " + thread.getStat().getJSONObject("player_data").getString("total_score") + "\n");
+                        tmp.append("Avg. Score: " + thread.getStat().getJSONObject("player_data").getString("average_score") + "\n");
+                        tmp.append("Played Songs: " + thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
+                        tmp.append(thread.getStat().getJSONObject("player_data").getString("total_music") + "\n");
+                        tmp.append("Rank: " + thread.getStat().getJSONObject("player_data").getString("rank") + "\n");
+                        tmp.append("Avatar: " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
+                        tmp.append("Title: " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
+                        tmp.append("Trophy: " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
+                        tmp.append("Trophy Rank: " + thread.getStat().getJSONObject("player_data").getString("trophy_rank") + "\n\n");
+                        tmp.append("Cleared: " + thread.getStat().getJSONObject("stage").getString("clear") + " / " + total_stage + "\n");
+                        tmp.append("No Miss: " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
+                        tmp.append("Full Chain: " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
+                        tmp.append("Perfect: " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
+                        tmp.append("Rank S: " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
+                        tmp.append("Rank S+: " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
+                        tmp.append("Rank S++: " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?",Toast.LENGTH_LONG).show();
+                    }
+
+                    cookieManager = thread.getCookieManager();
+                    top.setText(tmp.toString());
+                }else if(mode == 1 && !backupF){
+                    adapter = new songListAdapter(musicList, getApplicationContext());
+                    listView.setAdapter(adapter);
+
+                    top.setVisibility(View.GONE);
+                    listView.setVisibility(View.VISIBLE);
+                }else if(mode == 1 && backupF){
+                    Toast.makeText(MyPageActivity.this, "All score data saved!", Toast.LENGTH_LONG).show();
+                }
+
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {}
+
+        @Override
+        protected void onProgressUpdate(Void... values) {}
     }
 }

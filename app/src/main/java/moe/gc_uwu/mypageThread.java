@@ -87,6 +87,7 @@ public class mypageThread extends Thread implements Runnable {
 
     @Override
     public void run() {
+        Log.d("GCdata-mypage", "mypageThread.run()");
         try {
             if(loginUrl != "") {
                 formBody = new FormBody.Builder()
