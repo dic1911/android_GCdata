@@ -81,12 +81,17 @@ public class MyPageActivity extends AppCompatActivity
         setContentView(R.layout.activity_my_page);
 
         // init page
-        if(getIntent().getExtras() != null){
-            mode = 1;
-            setTitle("My Page (beta) - Scores");
-        }else{
-            mode = 0;
-            setTitle("My Page (beta)");
+        mode = getIntent().getExtras().getInt("mode");
+        switch (mode) {
+            case (0):{
+                setTitle("My Page (beta)");
+            }
+            case (1):{
+                setTitle("My Page (beta) - Scores");
+            }
+            case (2):{
+                setTitle("My Page (beta) - Event");
+            }
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -281,14 +286,15 @@ public class MyPageActivity extends AppCompatActivity
         } else if (id == R.id.nav_area) {
             Toast.makeText(this, "Not implemented",Toast.LENGTH_LONG).show();
         } else if(id == R.id.nav_stat) {
-            if(mode == 1){
+            if(mode != 0){
                 Intent intent = new Intent(this, MyPageActivity.class);
+                intent.putExtra("mode",0);
                 startActivity(intent);
             }
         } else if (id == R.id.nav_score) {
-            if(mode == 0){
+            if(mode != 1){
                 Intent intent = new Intent(this, MyPageActivity.class);
-                intent.putExtra("score","true");
+                intent.putExtra("mode",1);
                 startActivity(intent);
             }
         } else {
@@ -361,6 +367,25 @@ public class MyPageActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 backupF = true;
+            } else if(params[0] == 2) {
+                String event_url = "https://mypage.groovecoaster.jp/sp/json/event_data.php";
+                if (!alreadyLoggedIn) {
+                    thread = new mypageThread(event_url, cardID, passwd);
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    cookieManager = thread.getCookieManager();
+                } else {
+                    thread = new mypageThread(event_url, cookieManager);
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return null;
         }
@@ -460,8 +485,54 @@ public class MyPageActivity extends AppCompatActivity
                     listView.setVisibility(View.VISIBLE);
                 }else if(mode == 1 && backupF){
                     Toast.makeText(MyPageActivity.this, "All score data saved!", Toast.LENGTH_LONG).show();
-                }
+                }else if(mode == 2){
+                    JSONObject res = thread.getStat();
+                    tmp = new StringBuilder();
+                    tmp.append("\n\n");
+                    if(res.getInt("status") != 0){
+                        Toast.makeText(MyPageActivity.this,
+                                "Failed to get data!\nMaybe there's no event now?", Toast.LENGTH_LONG).show();
+                    }else{
+                        JSONObject data = res.getJSONObject("event_data");
+                        tmp.append(data.getString("title_name") + "\n");
+                        tmp.append(data.getString("open_date") + "~" + data.getString("close_date") + "\n\n");
 
+                        if (data.isNull("user_event_data")) {
+                            tmp.append("Not participated.");
+                        } else {
+                            tmp.append("Rank: " + data.getJSONObject("user_event_data").getString("rank") + "\n");
+                            tmp.append("Points: " + data.getJSONObject("user_event_data").getString("event_point") + "\n\n");
+
+                            // todo: complete the award section, fuck taito for all the stupid data format
+                            JSONObject award_data = data.getJSONObject("user_event_data").getJSONObject("award_data");
+                            tmp.append("Awards:\n\n");
+
+                            if (!award_data.isNull("title_award")) {
+                                tmp.append("Title(s): ");
+                                for (int i = 0; i < award_data.getJSONArray("title_award").length(); i++) {
+                                    tmp.append(award_data.getJSONArray("title_award").get(i) + "\n");
+                                }
+                            }
+                            tmp.append("\n");
+
+                            if (!award_data.isNull("item_award")) {
+                                String item, count;
+                                tmp.append("Item(s): ");
+                                for (int i = 11; data.getJSONObject("user_event_data").getJSONObject("item_award").has(String.valueOf(i)); i++) {
+                                    item = award_data.getJSONObject("item_award").getJSONObject(String.valueOf(i)).getString("item_name");
+                                    count = award_data.getJSONObject("item_award").getJSONObject(String.valueOf(i)).getString("item_num");
+                                    tmp.append(item + " x " + count + "\n");
+                                }
+                            }
+
+                            tmp.append("\n\n");
+
+                            tmp.append("Trophies: " + award_data.getString("trophy_num") + "\n");
+                        }
+                        top.setText(tmp);
+                    }
+
+                }
 
             }catch(Exception e){
                 e.printStackTrace();
