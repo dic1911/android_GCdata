@@ -33,6 +33,10 @@
             android:name=".MyScoreActivity"
             android:label="@string/title_activity_my_score"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name=".MonthlyRankActivity"
+            android:label="@string/title_activity_monthly_rank"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
     </application>
 
 </manifest>

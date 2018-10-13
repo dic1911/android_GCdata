@@ -11,6 +11,10 @@
                     android:icon="@drawable/ic_worldwide"
                     android:title="Global" />
                 <item
+                    android:id="@+id/nav_monthly"
+                    android:icon="@drawable/ic_calendar"
+                    android:title="Monthly" />
+                <item
                     android:id="@+id/nav_area"
                     android:icon="@drawable/ic_pin"
                     android:title="Area" />

@@ -121,7 +121,6 @@ public class MyPageActivity extends AppCompatActivity
         }
 
         db = openOrCreateDatabase("mypage", Context.MODE_PRIVATE, null);
-        //db.beginTransaction();
         db.execSQL("CREATE TABLE IF NOT EXISTS stats(id integer primary key,time timestamp default (strftime('%s', 'now'))," +
                     "total_score integer, avg_score integer, rank integer);");
 
@@ -201,7 +200,6 @@ public class MyPageActivity extends AppCompatActivity
                     top.setText("\n\nLoading...");
                     new AsyncGrabData().execute(mode);
 
-
                     //alreadyLoggedIn = true;
                     dataFetched = true;
                     return true;
@@ -276,6 +274,9 @@ public class MyPageActivity extends AppCompatActivity
 
         if (id == R.id.nav_global) {
             Intent intent = new Intent(this, GlobalRankActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_monthly) {
+            Intent intent = new Intent(this, MonthlyRankActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_area) {
             Toast.makeText(this, "Not implemented",Toast.LENGTH_LONG).show();

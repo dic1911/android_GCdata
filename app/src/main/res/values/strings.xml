@@ -24,4 +24,5 @@
     <string name="error_field_required">This field is required</string>
     <string name="fetch_data">Fetch data</string>
     <string name="title_activity_my_score">MyScoreActivity</string>
+    <string name="title_activity_monthly_rank">MonthlyRankActivity</string>
 </resources>

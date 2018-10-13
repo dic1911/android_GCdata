@@ -96,6 +96,9 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_global) {
             Intent intent = new Intent(this, GlobalRankActivity.class);
             startActivity(intent);
+        } else if (id == R.id.nav_monthly) {
+            Intent intent = new Intent(this, MonthlyRankActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_area) {
             Toast.makeText(MainActivity.this, "Not implemented",Toast.LENGTH_LONG).show();
         } else if (id == R.id.nav_stat) {

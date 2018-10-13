@@ -39,6 +39,7 @@ public class mypageThread extends Thread implements Runnable {
     URL Url;
     JSONObject stat;
 
+    Boolean skipLogin;
     CookieManager cookieManager;
     OkHttpClient client;
 
@@ -47,6 +48,7 @@ public class mypageThread extends Thread implements Runnable {
         this.url = "https://mypage.groovecoaster.jp/sp/json/player_data.php";
         this.cardID = cardID;
         this.passwd = passwd;
+        this.skipLogin = false;
         try {
             Url = new URL(this.url);
         } catch (MalformedURLException e) {
@@ -59,6 +61,7 @@ public class mypageThread extends Thread implements Runnable {
         this.url = url;
         this.cardID = cardID;
         this.passwd = passwd;
+        this.skipLogin = false;
         try {
             Url = new URL(this.url);
         } catch (MalformedURLException e) {
@@ -71,7 +74,21 @@ public class mypageThread extends Thread implements Runnable {
         this.url = url;
         this.cardID = "";
         this.passwd = "";
+        this.skipLogin = true;
         this.cookieManager = cookieManager;
+        try {
+            Url = new URL(this.url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    mypageThread(String url){
+        this.loginUrl = "";
+        this.url = url;
+        this.cardID = "";
+        this.passwd = "";
+        this.skipLogin = false;
         try {
             Url = new URL(this.url);
         } catch (MalformedURLException e) {
@@ -155,8 +172,12 @@ public class mypageThread extends Thread implements Runnable {
                     return true;
                 }
             });
-
-            OkHttpClient okHttpClient = builder.cookieJar(new JavaNetCookieJar(cookieManager)).build();
+            OkHttpClient okHttpClient;
+            if(cookieManager == null) {
+                okHttpClient = builder.build();
+            } else {
+                okHttpClient = builder.cookieJar(new JavaNetCookieJar(cookieManager)).build();
+            }
             return okHttpClient;
         } catch (Exception e) {
             throw new RuntimeException(e);

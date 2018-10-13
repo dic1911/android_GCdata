@@ -31,6 +31,14 @@ public class dataTemplate {
         this.pref = "030";
     }
 
+    public dataTemplate(String player, String score, String title, String pref, Boolean unused) {
+        this.player = player;
+        this.score = score;
+        this.title = title;
+        this.site = "ROUND 2 @ localhost";
+        this.pref = pref;
+    }
+
     public dataTemplate(String player, String score, String title, String site, String pref) {
         this.player = player;
         this.score = score;
@@ -56,6 +64,8 @@ public class dataTemplate {
     public String getSite(){
         if(this.pref != "030"){
             return this.pref + ", " + this.site;
+        }else if(this.site == "ROUND 2 @ localhost"){
+            return this.pref;
         }
         return this.site;
     }
