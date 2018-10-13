@@ -5,6 +5,8 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,9 +51,16 @@ public class MyPageActivity extends AppCompatActivity
     Boolean ready;
     static Boolean alreadyLoggedIn;
     static Boolean dataFetched;
+    static Boolean dbHasData;
     int mode;
 
     mypageThread thread;
+    int total_score;
+    int avg_score;
+    int rank;
+    int last_total_score;
+    int last_avg_score;
+    int last_rank;
 
     static ArrayList<musicTemplate> musicList;
     ArrayList<scoreTemplate> scoreData;
@@ -59,7 +68,10 @@ public class MyPageActivity extends AppCompatActivity
     songListAdapter adapter;
     ListView listView;
 
+    SQLiteDatabase db;
     SharedPreferences login;
+    SharedPreferences mypage_pref;
+    SharedPreferences.Editor pref_edit;
     static CookieManager cookieManager;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -100,6 +112,19 @@ public class MyPageActivity extends AppCompatActivity
         login = this.getSharedPreferences("login", Context.MODE_PRIVATE);
         cardID = login.getString("cardID", "");
         passwd = login.getString("passwd", "");
+
+        mypage_pref = this.getSharedPreferences("mypage", Context.MODE_PRIVATE);
+        pref_edit = mypage_pref.edit();
+        dbHasData = false;
+        if(mypage_pref.getBoolean("dbHasData", false)){
+            dbHasData = true;
+        }
+
+        db = openOrCreateDatabase("mypage", Context.MODE_PRIVATE, null);
+        //db.beginTransaction();
+        db.execSQL("CREATE TABLE IF NOT EXISTS stats(id integer primary key,time timestamp default (strftime('%s', 'now'))," +
+                    "total_score integer, avg_score integer, rank integer);");
+
 
         if(cardID != "" && passwd != ""){
             fetch.setVisibility(View.VISIBLE);
@@ -175,12 +200,8 @@ public class MyPageActivity extends AppCompatActivity
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN && ready){
                     top.setText("\n\nLoading...");
                     new AsyncGrabData().execute(mode);
-                    /*if(mode == 0) {
-                        new AsyncGrabData().execute(0);
-                    }else if(mode == 1){
-                        // grab music list
-                        new AsyncGrabData().execute(1);
-                    }*/
+
+
                     //alreadyLoggedIn = true;
                     dataFetched = true;
                     return true;
@@ -196,6 +217,12 @@ public class MyPageActivity extends AppCompatActivity
         super.onResume();
         cardID = login.getString("cardID", "");
         passwd = login.getString("passwd", "");
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        db.close();
     }
 
     @Override
@@ -344,13 +371,53 @@ public class MyPageActivity extends AppCompatActivity
                     try {
                         thread.join();
 
+                        total_score = Integer.parseInt(thread.getStat().getJSONObject("player_data").getString("total_score"));
+                        avg_score = thread.getStat().getJSONObject("player_data").getInt("average_score");
+                        rank = thread.getStat().getJSONObject("player_data").getInt("rank");
+
+                        if(dbHasData) {
+                            Cursor c = db.rawQuery("SELECT * FROM stats;", null);
+                            Log.d("GCdata-db","Stat.db.size="+c.getCount() + ", Stat.db.colCount=" + c.getColumnCount());
+                            if(c.moveToLast()) {
+                                last_total_score = c.getInt(2);
+                                last_avg_score = c.getInt(3);
+                                last_rank = c.getInt(4);
+                            }
+                            c.close();
+                        }
+
                         String total_stage = thread.getStat().getJSONObject("stage").getString("all");
                         tmp.append("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
-                        tmp.append("Score: " + thread.getStat().getJSONObject("player_data").getString("total_score") + "\n");
-                        tmp.append("Avg. Score: " + thread.getStat().getJSONObject("player_data").getString("average_score") + "\n");
+                        if(total_score == last_total_score) {
+                            tmp.append("Score: " + total_score + "\n");
+                        } else {
+                            if(total_score > last_total_score) {
+                                tmp.append("Score: " + total_score + "(+" + (total_score-last_total_score) + ")\n");
+                            } else {
+                                tmp.append("Score: " + total_score + "(" + (total_score-last_total_score) + ")\n");
+                            }
+                        }
+                        if(avg_score == last_avg_score) {
+                            tmp.append("Avg. Score: " + avg_score + "\n");
+                        } else {
+                            if(avg_score > last_avg_score) {
+                                tmp.append("Avg. Score: " + avg_score + "(+" + (avg_score-last_avg_score) + ")\n");
+                            } else {
+                                tmp.append("Avg. Score: " + avg_score + "(" + (avg_score-last_avg_score) + ")\n");
+                            }
+                        }
+
                         tmp.append("Played Songs: " + thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
                         tmp.append(thread.getStat().getJSONObject("player_data").getString("total_music") + "\n");
-                        tmp.append("Rank: " + thread.getStat().getJSONObject("player_data").getString("rank") + "\n");
+                        if(last_rank == rank) {
+                            tmp.append("Rank: " + rank + "\n");
+                        } else {
+                            if(rank > last_rank) {
+                                tmp.append("Rank: " + rank + "(+" + (rank-last_rank) + ")\n");
+                            } else {
+                                tmp.append("Rank: " + rank + "(" + (rank-last_rank) + ")\n");
+                            }
+                        }
                         tmp.append("Avatar: " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
                         tmp.append("Title: " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
                         tmp.append("Trophy: " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
@@ -362,9 +429,24 @@ public class MyPageActivity extends AppCompatActivity
                         tmp.append("Rank S: " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
                         tmp.append("Rank S+: " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
                         tmp.append("Rank S++: " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
+
+                        if(thread.getStat().getJSONObject("player_data").getBoolean("friendApplication")){
+                            Toast.makeText(MyPageActivity.this, "Friend request received!", Toast.LENGTH_LONG).show();
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?",Toast.LENGTH_LONG).show();
+                    }
+
+                    // todo: insert card id along with data for users with multiple cards
+                    long unixTime = System.currentTimeMillis() / 1000L;
+                    if(total_score != last_total_score || avg_score != last_avg_score || rank != last_rank)
+                        db.execSQL("INSERT INTO stats VALUES(null, " + unixTime + "," + total_score + "," + avg_score + "," + rank + ");");
+
+                    if(!dbHasData){
+                        dbHasData = true;
+                        pref_edit.putBoolean("dbHasData", true);
+                        pref_edit.commit();
                     }
 
                     cookieManager = thread.getCookieManager();
