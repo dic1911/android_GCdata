@@ -63,9 +63,11 @@ public class MyPageActivity extends AppCompatActivity
     int last_rank;
 
     static ArrayList<musicTemplate> musicList;
+    static ArrayList<friendTemplate> friendList;
     ArrayList<scoreTemplate> scoreData;
 
     songListAdapter adapter;
+    friendListAdapter fAdapter;
     ListView listView;
 
     SQLiteDatabase db;
@@ -91,6 +93,9 @@ public class MyPageActivity extends AppCompatActivity
             }
             case (2):{
                 setTitle("My Page (beta) - Event"); break;
+            }
+            case (3):{
+                setTitle("My Page (beta) - Friends"); break;
             }
         }
 
@@ -139,61 +144,98 @@ public class MyPageActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Log.d("GCdata-score", "music list item " + i + " selected.");
-                String ID = musicList.get(i).getId();
-                Log.d("GCdata-score", ID);
-                int music_id = Integer.parseInt(ID);
-                String url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
-                scoreTemplate song;
-                Boolean hasEx;
-                JSONObject fullData;
+                Log.d("GCdata-mypage", "list item " + i + " selected.");
+                if (mode == 1) {
+                    String ID = musicList.get(i).getId();
+                    Log.d("GCdata-score", ID);
+                    int music_id = Integer.parseInt(ID);
+                    String url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
+                    scoreTemplate song;
+                    Boolean hasEx;
+                    JSONObject fullData;
 
-                try{
-                    if(cookieManager != null) {
-                        thread = new mypageThread(url, cookieManager);
-                        thread.start();
-                        thread.join();
-                    }else{
-                        Toast.makeText(MyPageActivity.this, "Cookie is invalid! Tried restart the app?",Toast.LENGTH_LONG).show();
+                    try {
+                        if (cookieManager != null) {
+                            thread = new mypageThread(url, cookieManager);
+                            thread.start();
+                            thread.join();
+                        } else {
+                            Toast.makeText(MyPageActivity.this, "Cookie is invalid! Tried restart the app?", Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e){
-                    e.printStackTrace();
-                }
-                try {
-                    fullData = thread.getStat();
-                    if(fullData.getJSONObject("music_detail").getInt("ex_flag") != 0){
-                        hasEx = true;
-                    }else{ hasEx = false; }
+                    try {
+                        fullData = thread.getStat();
+                        if (fullData.getJSONObject("music_detail").getInt("ex_flag") != 0) {
+                            hasEx = true;
+                        } else {
+                            hasEx = false;
+                        }
 
 
-                    JSONObject detail = fullData.getJSONObject("music_detail");
+                        JSONObject detail = fullData.getJSONObject("music_detail");
 
-                    JSONObject s;
-                    JSONObject n;
-                    JSONObject h;
-                    JSONObject e;
-                    JSONObject blk = new JSONObject();
-                    blk.put("blank", true);
+                        JSONObject s;
+                        JSONObject n;
+                        JSONObject h;
+                        JSONObject e;
+                        JSONObject blk = new JSONObject();
+                        blk.put("blank", true);
 
-                    if(detail.isNull("simple_result_data")){ s = blk; }else{ s = detail.getJSONObject("simple_result_data"); }
-                    if(detail.isNull("normal_result_data")){ n = blk; }else{ n = detail.getJSONObject("normal_result_data"); }
-                    if(detail.isNull("hard_result_data")){ h = blk; }else{ h = detail.getJSONObject("hard_result_data"); }
-                    if(!hasEx || detail.isNull("extra_result_data")){ e = blk; }else{ e = detail.getJSONObject("extra_result_data"); }
+                        if (detail.isNull("simple_result_data")) {
+                            s = blk;
+                        } else {
+                            s = detail.getJSONObject("simple_result_data");
+                        }
+                        if (detail.isNull("normal_result_data")) {
+                            n = blk;
+                        } else {
+                            n = detail.getJSONObject("normal_result_data");
+                        }
+                        if (detail.isNull("hard_result_data")) {
+                            h = blk;
+                        } else {
+                            h = detail.getJSONObject("hard_result_data");
+                        }
+                        if (!hasEx || detail.isNull("extra_result_data")) {
+                            e = blk;
+                        } else {
+                            e = detail.getJSONObject("extra_result_data");
+                        }
 
-                    if(hasEx){
-                        song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
-                                hasEx, s, n, h, e, detail.getJSONArray("user_rank"), detail);
-                    }else{
-                        song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
-                                hasEx, s, n, h, detail.getJSONArray("user_rank"), detail);
+                        if (hasEx) {
+                            song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
+                                    hasEx, s, n, h, e, detail.getJSONArray("user_rank"), detail);
+                        } else {
+                            song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
+                                    hasEx, s, n, h, detail.getJSONArray("user_rank"), detail);
+                        }
+
+                        Intent scoreIntent = new Intent(MyPageActivity.this, MyScoreActivity.class);
+                        song.dataToIntent(scoreIntent);
+                        Log.d("GCdata-score", "Starting score display activity");
+                        startActivity(scoreIntent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
+                } else if (mode == 3) {
+                    // load stat for the selected friend
 
-                    Intent scoreIntent = new Intent(MyPageActivity.this, MyScoreActivity.class);
-                    song.dataToIntent(scoreIntent);
-                    Log.d("GCdata-score", "Starting score display activity");
-                    startActivity(scoreIntent);
-                } catch (Exception e){
-                    e.printStackTrace();
+                    try {
+                        if (thread.getStat().getInt("status") != 0) {
+                            Toast.makeText(MyPageActivity.this, "Error encountered when making request", Toast.LENGTH_LONG).show();
+                        } else {
+                            Intent intent = new Intent(MyPageActivity.this, MyFriendActivity.class);
+                            intent.putExtra("login", cardID);
+                            intent.putExtra("passwd", passwd);
+                            intent.putExtra("name", friendList.get(i).title);
+                            intent.putExtra("hash", friendList.get(i).hash);
+                            startActivity(intent);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -294,11 +336,21 @@ public class MyPageActivity extends AppCompatActivity
         } else if (id == R.id.nav_score) {
             if(mode != 1){
                 Intent intent = new Intent(this, MyPageActivity.class);
-                intent.putExtra("mode",1);
+                intent.putExtra("mode", 1);
                 startActivity(intent);
             }
-        } else {
-            //Toast.makeText(MyPageActivity.this, "Not implemented",Toast.LENGTH_LONG).show();
+        } else if (id == R.id.nav_event) {
+            if(mode != 2) {
+                Intent intent = new Intent(this, MyPageActivity.class);
+                intent.putExtra("mode", 2);
+                startActivity(intent);
+            }
+        } else if (id == R.id.nav_friend) {
+            if(mode != 3) {
+                Intent intent = new Intent(this, MyPageActivity.class);
+                intent.putExtra("mode", 3);
+                startActivity(intent);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -328,6 +380,9 @@ public class MyPageActivity extends AppCompatActivity
                 musicList = new ArrayList<>();
             } else if(params[0] == 2) {
                 reqURL = "https://mypage.groovecoaster.jp/sp/json/event_data.php";
+            } else if(params[0] == 3) {
+                friendList = new ArrayList<>();
+                reqURL = "https://mypage.groovecoaster.jp/sp/json/friend_list.php";
             } else if(params[0] == 8) {
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD_HHmmss");
@@ -345,10 +400,8 @@ public class MyPageActivity extends AppCompatActivity
             if(params[0] != 0 && params[0] != 8){
                 if (!alreadyLoggedIn) {
                     thread = new mypageThread(reqURL, cardID, passwd);
-                    cookieManager = thread.getCookieManager();
                 } else {
                     thread = new mypageThread(reqURL, cookieManager);
-
                 }
 
                 thread.start();
@@ -357,6 +410,8 @@ public class MyPageActivity extends AppCompatActivity
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                // save cookie for everyone uwu
+                cookieManager = thread.getCookieManager();
 
                 if(params[0] == 1){
                     try {
@@ -365,6 +420,20 @@ public class MyPageActivity extends AppCompatActivity
                         for (int i = 0; i < len; i++) {
                             musicList.add(new musicTemplate(songs.getJSONObject(i).getString("music_id"),
                                     songs.getJSONObject(i).getString("music_title")));
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?", Toast.LENGTH_LONG).show();
+                    }
+                }else if(params[0] == 3){
+                    try {
+                        JSONArray friends = thread.getStat().getJSONArray("friendList");
+                        int len = friends.length();
+                        for (int i = 0; i < len; i++) {
+                            friendList.add(new friendTemplate(String.valueOf(i+1),
+                                    friends.getJSONObject(i).getString("name") +
+                                         "   [" + friends.getJSONObject(i).getString("title") + "]",
+                                         friends.getJSONObject(i).getString("card_id")));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -438,8 +507,8 @@ public class MyPageActivity extends AppCompatActivity
                         tmp.append("No Miss: " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
                         tmp.append("Full Chain: " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
                         tmp.append("Perfect: " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
-                        tmp.append("Rank S: " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
-                        tmp.append("Rank S+: " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
+                        tmp.append("Rank S  : " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
+                        tmp.append("Rank S+ : " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
                         tmp.append("Rank S++: " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
 
                         if(thread.getStat().getJSONObject("player_data").getBoolean("friendApplication")){
@@ -516,6 +585,17 @@ public class MyPageActivity extends AppCompatActivity
                             tmp.append("Trophies: " + award_data.getString("trophy_num") + "\n");
                         }
                         top.setText(tmp);
+                    }
+
+                }else if(mode == 3){
+                    if(thread.getStat().getInt("status") != 0){
+                        top.setText("\n\nSomething is wrong, retry later or contact the developer.");
+                    }else{
+                        fAdapter = new friendListAdapter(friendList, getApplicationContext());
+                        listView.setAdapter(fAdapter);
+
+                        top.setVisibility(View.GONE);
+                        listView.setVisibility(View.VISIBLE);
                     }
 
                 }

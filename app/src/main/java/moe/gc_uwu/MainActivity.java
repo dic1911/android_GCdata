@@ -115,6 +115,10 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, MyPageActivity.class);
             intent.putExtra("mode",2);
             startActivity(intent);
+        } else if (id == R.id.nav_friend) {
+            Intent intent = new Intent(this, MyPageActivity.class);
+            intent.putExtra("mode",3);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

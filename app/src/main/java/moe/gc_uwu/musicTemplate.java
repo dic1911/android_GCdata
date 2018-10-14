@@ -4,6 +4,8 @@ public class musicTemplate {
     String id;
     String title;
 
+    public musicTemplate(){}
+
     public musicTemplate(String id, String title){
         this.id = id;
         this.title = title;
