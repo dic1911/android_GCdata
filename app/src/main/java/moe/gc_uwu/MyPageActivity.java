@@ -301,7 +301,7 @@ public class MyPageActivity extends AppCompatActivity
             return true;
         } else if (id == R.id.action_score_backup) {
             // todo: show the progress somewhere on screen
-            if(!dataFetched || mode == 0){
+            if(!dataFetched || mode != 1){
                 Toast.makeText(MyPageActivity.this, "Fetch song list before back things up",Toast.LENGTH_LONG).show();
             }else {
                 Toast.makeText(MyPageActivity.this, "Backing up all the scores to local storage..", Toast.LENGTH_LONG).show();
