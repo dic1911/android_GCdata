@@ -84,13 +84,13 @@ public class MyPageActivity extends AppCompatActivity
         mode = getIntent().getExtras().getInt("mode");
         switch (mode) {
             case (0):{
-                setTitle("My Page (beta)");
+                setTitle("My Page (beta)"); break;
             }
             case (1):{
-                setTitle("My Page (beta) - Scores");
+                setTitle("My Page (beta) - Scores"); break;
             }
             case (2):{
-                setTitle("My Page (beta) - Event");
+                setTitle("My Page (beta) - Event"); break;
             }
         }
 
@@ -310,6 +310,7 @@ public class MyPageActivity extends AppCompatActivity
 
         StringBuilder tmp;
         boolean backupF;
+        String reqURL;
 
         @Override
         protected String doInBackground(Integer... params) {
@@ -322,39 +323,11 @@ public class MyPageActivity extends AppCompatActivity
                 thread.start();
             } else if(params[0] == 1) {
                 // grab music list
-                String listUrl = "https://mypage.groovecoaster.jp/sp/json/music_list.php";
-                if (!alreadyLoggedIn) {
-                    thread = new mypageThread(listUrl, cardID, passwd);
-                    thread.start();
-                    scoreData = new ArrayList<>();
-                    musicList = new ArrayList<>();
-                    try {
-                        thread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    cookieManager = thread.getCookieManager();
-                } else {
-                    thread = new mypageThread(listUrl, cookieManager);
-                    try {
-                        thread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                try {
-                    JSONArray songs = thread.getStat().getJSONArray("music_list");
-                    int len = songs.length();
-                    for (int i = 0; i < len; i++) {
-                        musicList.add(new musicTemplate(songs.getJSONObject(i).getString("music_id"),
-                                songs.getJSONObject(i).getString("music_title")));
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?", Toast.LENGTH_LONG).show();
-                }
+                reqURL = "https://mypage.groovecoaster.jp/sp/json/music_list.php";
+                scoreData = new ArrayList<>();
+                musicList = new ArrayList<>();
+            } else if(params[0] == 2) {
+                reqURL = "https://mypage.groovecoaster.jp/sp/json/event_data.php";
             } else if(params[0] == 8) {
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD_HHmmss");
@@ -367,26 +340,39 @@ public class MyPageActivity extends AppCompatActivity
                     e.printStackTrace();
                 }
                 backupF = true;
-            } else if(params[0] == 2) {
-                String event_url = "https://mypage.groovecoaster.jp/sp/json/event_data.php";
+            }
+
+            if(params[0] != 0 && params[0] != 8){
                 if (!alreadyLoggedIn) {
-                    thread = new mypageThread(event_url, cardID, passwd);
-                    thread.start();
-                    try {
-                        thread.join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    thread = new mypageThread(reqURL, cardID, passwd);
                     cookieManager = thread.getCookieManager();
                 } else {
-                    thread = new mypageThread(event_url, cookieManager);
+                    thread = new mypageThread(reqURL, cookieManager);
+
+                }
+
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(params[0] == 1){
                     try {
-                        thread.join();
-                    } catch (InterruptedException e) {
+                        JSONArray songs = thread.getStat().getJSONArray("music_list");
+                        int len = songs.length();
+                        for (int i = 0; i < len; i++) {
+                            musicList.add(new musicTemplate(songs.getJSONObject(i).getString("music_id"),
+                                    songs.getJSONObject(i).getString("music_title")));
+                        }
+                    } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?", Toast.LENGTH_LONG).show();
                     }
                 }
             }
+
             return null;
         }
 

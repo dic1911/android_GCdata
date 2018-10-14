@@ -62,10 +62,10 @@ public class dataTemplate {
     }
 
     public String getSite(){
-        if(this.pref != "030"){
-            return this.pref + ", " + this.site;
-        }else if(this.site == "ROUND 2 @ localhost"){
+        if(this.site == "ROUND 2 @ localhost"){
             return this.pref;
+        }else if(this.pref != "030"){
+            return this.pref + ", " + this.site;
         }
         return this.site;
     }
