@@ -21,6 +21,7 @@ public class scoreBackupThread extends Thread implements Runnable {
     Context context;
     String file;
     CookieManager cookieManager;
+    String friendHash;
     String result;
     StringBuilder preres;
 
@@ -33,6 +34,17 @@ public class scoreBackupThread extends Thread implements Runnable {
         this.file = file;
         this.cookieManager = cookieManager;
         this.songList = songList;
+        this.friendHash = "";
+
+        result = "id,song,simple_mk,simple_rt,simple_sc,sp_chain,simple_pc,sp_rank,normal_mk,normal_rt,normal_sc,nm_chain,normal_pc,nm_rank,hard_mk,hard_rt,hard_sc,hd_chain,hard_pc,hd_rank,extra_mk,extra_rt,extra_sc,ex_chain,extra_pc,ex_rank\n";
+    }
+
+    public scoreBackupThread(Context context, String file, CookieManager cookieManager, ArrayList<musicTemplate> songList, String friendHash){
+        this.context = context;
+        this.file = file;
+        this.cookieManager = cookieManager;
+        this.songList = songList;
+        this.friendHash = friendHash;
 
         result = "id,song,simple_mk,simple_rt,simple_sc,sp_chain,simple_pc,sp_rank,normal_mk,normal_rt,normal_sc,nm_chain,normal_pc,nm_rank,hard_mk,hard_rt,hard_sc,hd_chain,hard_pc,hd_rank,extra_mk,extra_rt,extra_sc,ex_chain,extra_pc,ex_rank\n";
     }
@@ -134,7 +146,11 @@ public class scoreBackupThread extends Thread implements Runnable {
             Log.d("GCdata-score_bkp", String.valueOf(i+1) + "/" + String.valueOf(songList.size()));
 
             music_id = songList.get(i).getId();
-            url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
+            if(friendHash.equals("")) {
+                url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
+            } else {
+                url = "https://mypage.groovecoaster.jp/sp/json/friend_music_detail.php?music_id=" + music_id + "&hash=" + friendHash;
+            }
 
             // fetch -j4
             if(i > 3){

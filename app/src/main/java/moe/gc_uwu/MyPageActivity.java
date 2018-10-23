@@ -1,7 +1,6 @@
 package moe.gc_uwu;
 
 import android.annotation.SuppressLint;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -54,6 +53,10 @@ public class MyPageActivity extends AppCompatActivity
     static Boolean dbHasData;
     int mode;
 
+    Boolean friendScore;
+    String friendName;
+    String friendHash;
+
     mypageThread thread;
     int total_score;
     int avg_score;
@@ -83,13 +86,23 @@ public class MyPageActivity extends AppCompatActivity
         setContentView(R.layout.activity_my_page);
 
         // init page
+        friendScore = false;
         mode = getIntent().getExtras().getInt("mode");
         switch (mode) {
             case (0):{
                 setTitle("My Page (beta)"); break;
             }
             case (1):{
-                setTitle("My Page (beta) - Scores"); break;
+                if(getIntent().getExtras().containsKey("friendHash")){
+                    friendName = getIntent().getExtras().getString("friendName");
+                    friendName = friendName.split("\\[")[0];
+                    setTitle("My Page (beta) - Scores - " + friendName);
+                    friendScore = true;
+                    friendHash = getIntent().getExtras().getString("friendHash");
+                }else{
+                    setTitle("My Page (beta) - Scores");
+                }
+                break;
             }
             case (2):{
                 setTitle("My Page (beta) - Event"); break;
@@ -149,7 +162,13 @@ public class MyPageActivity extends AppCompatActivity
                     String ID = musicList.get(i).getId();
                     Log.d("GCdata-score", ID);
                     int music_id = Integer.parseInt(ID);
-                    String url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
+                    String url;
+                    if(!friendScore)
+                        url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
+                    else{
+                        url = "https://mypage.groovecoaster.jp/sp/json/friend_music_detail.php?music_id=" + music_id + "&hash=" + friendHash;
+                    }
+
                     scoreTemplate song;
                     Boolean hasEx;
                     JSONObject fullData;
@@ -283,7 +302,10 @@ public class MyPageActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_page, menu);
+        if(mode == 1)
+            getMenuInflater().inflate(R.menu.my_page_score, menu);
+        else
+            getMenuInflater().inflate(R.menu.my_page, menu);
         return true;
     }
 
@@ -321,12 +343,14 @@ public class MyPageActivity extends AppCompatActivity
 
         if (id == R.id.nav_global) {
             Intent intent = new Intent(this, GlobalRankActivity.class);
+            intent.putExtra("mode", 0);
             startActivity(intent);
         } else if (id == R.id.nav_monthly) {
             Intent intent = new Intent(this, MonthlyRankActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_area) {
-            Toast.makeText(this, "Not implemented",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, GlobalRankActivity.class);
+            intent.putExtra("mode", 1);
         } else if(id == R.id.nav_stat) {
             if(mode != 0){
                 Intent intent = new Intent(this, MyPageActivity.class);
@@ -375,7 +399,10 @@ public class MyPageActivity extends AppCompatActivity
                 thread.start();
             } else if(params[0] == 1) {
                 // grab music list
-                reqURL = "https://mypage.groovecoaster.jp/sp/json/music_list.php";
+                if(!friendScore)
+                    reqURL = "https://mypage.groovecoaster.jp/sp/json/music_list.php";
+                else
+                    reqURL = "https://mypage.groovecoaster.jp/sp/json/friend_music_list.php?hash=" + friendHash;
                 scoreData = new ArrayList<>();
                 musicList = new ArrayList<>();
             } else if(params[0] == 2) {
@@ -386,8 +413,21 @@ public class MyPageActivity extends AppCompatActivity
             } else if(params[0] == 8) {
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMDD_HHmmss");
-                File file = new File(getExternalFilesDir(null), "gcdata_score-" + sdf.format(cal.getTime()) + ".csv");
-                scoreBackupThread bkpThread = new scoreBackupThread(MyPageActivity.this, file.getAbsolutePath(), cookieManager, musicList);
+                String filename;
+
+                if(!friendScore) {
+                    filename = "gcdata_score-" + sdf.format(cal.getTime()) + ".csv";
+                } else {
+                    filename = "gcdata_score-" + friendName + "-" + sdf.format(cal.getTime()) + ".csv";
+                }
+
+                File file = new File(getExternalFilesDir(null), filename);
+                scoreBackupThread bkpThread;
+                if(!friendScore) {
+                    bkpThread = new scoreBackupThread(MyPageActivity.this, file.getAbsolutePath(), cookieManager, musicList);
+                } else {
+                    bkpThread = new scoreBackupThread(MyPageActivity.this, file.getAbsolutePath(), cookieManager, musicList, friendHash);
+                }
                 bkpThread.start();
                 try {
                     bkpThread.join();

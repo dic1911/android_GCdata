@@ -1,5 +1,6 @@
 package moe.gc_uwu;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,8 @@ import org.w3c.dom.Text;
 
 public class MyFriendActivity extends AppCompatActivity {
 
+    Bundle data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,7 +26,7 @@ public class MyFriendActivity extends AppCompatActivity {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         setSupportActionBar(toolbar);
 
-        Bundle data = getIntent().getExtras();
+        data = getIntent().getExtras();
         StringBuilder str = new StringBuilder("\n");
 
         String url = "https://mypage.groovecoaster.jp/sp/json/friend_player_data.php?hash=" + data.getString("hash");
@@ -64,11 +67,15 @@ public class MyFriendActivity extends AppCompatActivity {
 
         text.setText(str.toString());
 
-        //fab.setVisibility(View.VISIBLE);
+        fab.setVisibility(View.VISIBLE);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // todo: view friend's score
+                Intent intent = new Intent(MyFriendActivity.this, MyPageActivity.class);
+                intent.putExtra("mode",1);
+                intent.putExtra("friendHash", data.getString("hash"));
+                intent.putExtra("friendName", data.getString("name"));
+                startActivity(intent);
             }
         });
     }
