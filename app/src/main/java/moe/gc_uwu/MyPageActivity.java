@@ -25,12 +25,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-
-/*import org.jsoup.Jsoup;
-import org.jsoup.Connection;
-import org.jsoup.nodes.Document;*/
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 

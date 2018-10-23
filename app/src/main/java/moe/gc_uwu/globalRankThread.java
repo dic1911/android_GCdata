@@ -25,6 +25,7 @@ public class globalRankThread extends Thread implements Runnable {
     NodeList titles;
     NodeList sites;
     NodeList loc;
+    NodeList locId;
 
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder;
@@ -54,6 +55,8 @@ public class globalRankThread extends Thread implements Runnable {
     }
 
     public NodeList getLoc(){ return this.loc; }
+
+    public NodeList getLocId(){ return this.locId; }
 
     private String readStream(InputStream is) {
         try {
@@ -90,6 +93,7 @@ public class globalRankThread extends Thread implements Runnable {
                     scores = data.getElementsByTagName("score_bi1");
                     titles = data.getElementsByTagName("title");
                     loc = data.getElementsByTagName("pref");
+                    locId = data.getElementsByTagName("pref_id");
                     sites = data.getElementsByTagName("tenpo_name");
                 } catch (Exception e) {
                     e.printStackTrace();

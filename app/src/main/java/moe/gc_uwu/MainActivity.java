@@ -3,7 +3,6 @@ package moe.gc_uwu;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -95,14 +93,16 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_global) {
             Intent intent = new Intent(this, GlobalRankActivity.class);
+            intent.putExtra("mode", 0);
             startActivity(intent);
         } else if (id == R.id.nav_monthly) {
             Intent intent = new Intent(this, MonthlyRankActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_area) {
-            Toast.makeText(MainActivity.this, "Not implemented",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, GlobalRankActivity.class);
+            intent.putExtra("mode", 1);
+            startActivity(intent);
         } else if (id == R.id.nav_stat) {
-            //Toast.makeText(MainActivity.this, "Not implemented",Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MyPageActivity.class);
             intent.putExtra("mode",0);
             startActivity(intent);
