@@ -27,8 +27,7 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
 
     private static rankingAdapter adapter;
     ArrayList<dataTemplate> data;
-    //ArrayList<ArrayList<dataTemplate>> data_area;
-    Map<Integer, ArrayList<dataTemplate>> data_area;
+    Map<Integer, ArrayList<dataTemplate>> dataMap;
     Map<Integer, String> idToLoc;
     ListView listView;
     ArrayAdapter aa;
@@ -94,71 +93,18 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
 
         // init shit
 
-
         // fetch data from taito uwu
-        if(mode == 0) {
-            threadArr = new globalRankThread[10];
-            threadArr[0] = new globalRankThread(String.valueOf(1));
-
-            threadArr[0].start();
-            // todo: make it faster / don't delay the activity launch while waiting for response
-            try {
-                threadArr[0].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            data = new ArrayList<>(100);
-            for (int i = 0; i < 100; i++) {
-                tmp = String.valueOf(i + 1) + ". " + threadArr[0].getNames().item(i).getTextContent();
-                tmp2 = threadArr[0].getScores().item(i).getTextContent(); //score
-                tmp3 = threadArr[0].getTitles().item(i).getTextContent(); //title
-                tmp4 = threadArr[0].getSites().item(i).getTextContent(); //site
-                tmp5 = threadArr[0].getLoc().item(i).getTextContent(); //location
-                data.add(new dataTemplate(tmp, tmp2, tmp3, tmp4, tmp5));
-            }
-
-
-            for (int i = 1; i < 10; i++) {
-                threadArr[i] = new globalRankThread(String.valueOf(i + 1));
-                threadArr[i].start();
-            }
-
-            aa = new ArrayAdapter(this,R.layout.global_rank_spinner, pages);
-            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(aa);
-            adapter = new rankingAdapter(data, getApplicationContext());
-            listView.setAdapter(adapter);
-        } else if (mode == 1) {
-            grabber = (AsyncGrabData) new AsyncGrabData().execute(mode);
-        }
-        Log.d("GCdata", "======== END OF onCreate() ========");
+        grabber = (AsyncGrabData) new AsyncGrabData().execute(mode);
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        if(mode == 0) {
-            for (int i = 1; i < 10; i++) {
-                try {
-                    threadArr[i].join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        if (ready) {
+            if (mode == 0)
+                data = dataMap.get(position);
+            else if (mode == 1 && ready)
+                data = dataMap.get(parseInt(pages[position].split(" ")[0]));
 
-            data = new ArrayList<>(100);
-            for (int i = 0; i < 100; i++) {
-                tmp = String.valueOf((i + 1) + (position * 100)) + ". " + threadArr[position].getNames().item(i).getTextContent(); //name
-                tmp2 = threadArr[position].getScores().item(i).getTextContent(); //score
-                tmp3 = threadArr[position].getTitles().item(i).getTextContent(); //title
-                tmp4 = threadArr[position].getSites().item(i).getTextContent(); //site
-                tmp5 = threadArr[position].getLoc().item(i).getTextContent(); //location
-                data.add(new dataTemplate(tmp, tmp2, tmp3, tmp4, tmp5));
-            }
-            adapter = new rankingAdapter(data, getApplicationContext());
-            listView.setAdapter(adapter);
-        } else if(mode == 1 && ready) {
-            data = data_area.get(parseInt(pages[position].split(" ")[0]));
             adapter = new rankingAdapter(data, getApplicationContext());
             listView.setAdapter(adapter);
         }
@@ -168,25 +114,39 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
 
         @Override
         protected String doInBackground(Integer... params) {
-            if(mode == 1){
-                threadArr = new globalRankThread[10];
-                for(int i=0; i<10; i++) {
-                    threadArr[i] = new globalRankThread(String.valueOf(i+1));
-                    threadArr[i].start();
-                }
+            threadArr = new globalRankThread[10];
+            for (int i = 0; i < 10; i++) {
+                threadArr[i] = new globalRankThread(String.valueOf(i + 1));
+                threadArr[i].start();
+            }
 
-                for(int i=0; i<10; i++){
-                    try {
-                        threadArr[i].join();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+            for(int i=0; i<10; i++){
+                try {
+                    threadArr[i].join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            dataMap = new HashMap<>();
+            data = new ArrayList<>(100);
+
+            if(mode == 0){
+                for(int batch=0; batch<10; batch++) {
+                    dataMap.put(batch, new ArrayList<dataTemplate>(100));
+                    for(int i=0; i<100; i++){
+                        tmp = String.valueOf((batch*100) + (i+1)) + ". " + threadArr[batch].getNames().item(i).getTextContent();
+                        tmp2 = threadArr[batch].getScores().item(i).getTextContent(); //score
+                        tmp3 = threadArr[batch].getTitles().item(i).getTextContent(); //title
+                        tmp4 = threadArr[batch].getSites().item(i).getTextContent(); //site
+                        tmp5 = threadArr[batch].getLoc().item(i).getTextContent(); //location
+                        dataMap.get(batch).add(new dataTemplate(tmp, tmp2, tmp3, tmp4, tmp5));
                     }
                 }
-
+            }else if(mode == 1){
                 int locId;
-                data_area = new HashMap<>();
                 idToLoc = new HashMap<>();
-                data = new ArrayList<>(100);
+
                 for(int batch=0; batch<10; batch++)
                 for(int i=0; i<100; i++){
                     tmp = String.valueOf((i+1)+(batch*100)) + ". " + threadArr[batch].getNames().item(i).getTextContent(); //name
@@ -195,19 +155,19 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
                     tmp4 = threadArr[batch].getSites().item(i).getTextContent(); //site
                     tmp5 = threadArr[batch].getLoc().item(i).getTextContent(); //location
                     locId = parseInt(threadArr[batch].getLocId().item(i).getTextContent()); //location id
-                    if(!data_area.containsKey(locId)){
-                        data_area.put(locId, new ArrayList<dataTemplate>(20));
+                    if(!dataMap.containsKey(locId)){
+                        dataMap.put(locId, new ArrayList<dataTemplate>(20));
                     }
-                    data_area.get(locId).add(new dataTemplate(tmp, tmp2, tmp3, tmp4, tmp5));
+                    dataMap.get(locId).add(new dataTemplate(tmp, tmp2, tmp3, tmp4, tmp5));
 
                     if(!idToLoc.containsKey(locId)){
                         idToLoc.put(locId, tmp5);
                     }
                 }
-                pages = new String[data_area.keySet().size()];
-                for(int i=0; i<data_area.keySet().size(); i++){
-                    pages[i] = String.valueOf(data_area.keySet().toArray()[i]) +
-                            " (" + idToLoc.get(data_area.keySet().toArray()[i]) + ")";
+                pages = new String[dataMap.keySet().size()];
+                for(int i=0; i<dataMap.keySet().size(); i++){
+                    pages[i] = String.valueOf(dataMap.keySet().toArray()[i]) +
+                            " (" + idToLoc.get(dataMap.keySet().toArray()[i]) + ")";
                 }
 
             }
@@ -216,15 +176,15 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
 
         @Override
         protected void onPostExecute(String result) {
-            if(mode == 1){
-                aa = new ArrayAdapter(GlobalRankActivity.this,R.layout.global_rank_spinner, pages);
-                aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(aa);
+            aa = new ArrayAdapter(GlobalRankActivity.this,R.layout.global_rank_spinner, pages);
+            aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(aa);
 
-                adapter = new rankingAdapter(data_area.get(158), getApplicationContext());
-                listView.setAdapter(adapter);
-                ready = true;
-            }
+            Log.d("GCdata-rank", String.valueOf(dataMap.keySet().toArray()[0]));
+
+            adapter = new rankingAdapter(dataMap.get(dataMap.keySet().toArray()[0]), getApplicationContext());
+            listView.setAdapter(adapter);
+            ready = true;
         }
 
         @Override
