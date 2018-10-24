@@ -140,7 +140,7 @@ public class mypageThread extends Thread implements Runnable {
         }
     }
 
-    private static OkHttpClient getUnsafeOkHttpClient(CookieManager cookieManager) {
+    protected static OkHttpClient getUnsafeOkHttpClient(CookieManager cookieManager) {
         try {
             // Create a trust manager that does not validate certificate chains
             final TrustManager[] trustAllCerts = new TrustManager[] {
