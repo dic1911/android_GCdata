@@ -253,6 +253,9 @@ public class MyPageActivity extends AppCompatActivity
             }
         });
 
+        top.setText("\n\nLoading...");
+        new AsyncGrabData().execute(mode);
+
         fetch.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {

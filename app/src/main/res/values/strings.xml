@@ -23,7 +23,9 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="fetch_data">Fetch data</string>
+    <string name="refresh">Refresh</string>
     <string name="title_activity_my_score">MyScoreActivity</string>
     <string name="title_activity_monthly_rank">MonthlyRankActivity</string>
     <string name="title_activity_my_friend">MyFriendActivity</string>
+    <string name="title_activity_monthly_stat">MonthlyStatActivity</string>
 </resources>
