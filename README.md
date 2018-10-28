@@ -29,6 +29,10 @@
 
 ### Changelog (since v0.3.6)
 
+**v0.3.8**
+1. Event stats fixed
+2. Fetch data on activity start
+
 **v0.3.7**
 1. Minor improvement in public ranking page
 2. Introduce initial update checking feature in app
