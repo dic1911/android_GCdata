@@ -84,25 +84,25 @@ public class MyPageActivity extends AppCompatActivity
         mode = getIntent().getExtras().getInt("mode");
         switch (mode) {
             case (0):{
-                setTitle("My Page (beta)"); break;
+                setTitle(getString(R.string.my_page)); break;
             }
             case (1):{
                 if(getIntent().getExtras().containsKey("friendHash")){
                     friendName = getIntent().getExtras().getString("friendName");
                     friendName = friendName.split("\\[")[0];
-                    setTitle("My Page (beta) - Scores - " + friendName);
+                    setTitle(getString(R.string.my_page) + " - " + getString(R.string.scores) + " - " + friendName);
                     friendScore = true;
                     friendHash = getIntent().getExtras().getString("friendHash");
                 }else{
-                    setTitle("My Page (beta) - Scores");
+                    setTitle(getString(R.string.my_page) + " - " + getString(R.string.scores));
                 }
                 break;
             }
             case (2):{
-                setTitle("My Page (beta) - Event"); break;
+                setTitle(getString(R.string.my_page) + " - " + getString(R.string.event)); break;
             }
             case (3):{
-                setTitle("My Page (beta) - Friends"); break;
+                setTitle(getString(R.string.my_page) + " - " + getString(R.string.friends)); break;
             }
         }
 
@@ -115,7 +115,6 @@ public class MyPageActivity extends AppCompatActivity
         if(alreadyLoggedIn == null)
             alreadyLoggedIn = false;
         listView = (ListView) findViewById(R.id.score_list);
-        //fetch.setVisibility(View.GONE);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -173,7 +172,7 @@ public class MyPageActivity extends AppCompatActivity
                             thread.start();
                             thread.join();
                         } else {
-                            Toast.makeText(MyPageActivity.this, "Cookie is invalid! Tried restart the app?", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyPageActivity.this, getString(R.string.mypage_cookie_error), Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -237,7 +236,7 @@ public class MyPageActivity extends AppCompatActivity
 
                     try {
                         if (thread.getStat().getInt("status") != 0) {
-                            Toast.makeText(MyPageActivity.this, "Error encountered when making request", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyPageActivity.this, getString(R.string.mypage_response_error), Toast.LENGTH_LONG).show();
                         } else {
                             Intent intent = new Intent(MyPageActivity.this, MyFriendActivity.class);
                             intent.putExtra("login", cardID);
@@ -321,10 +320,9 @@ public class MyPageActivity extends AppCompatActivity
         } else if (id == R.id.action_score_backup) {
             // todo: show the progress somewhere on screen
             if(!dataFetched || mode != 1){
-                Toast.makeText(MyPageActivity.this, "Fetch song list before back things up",Toast.LENGTH_LONG).show();
+                Toast.makeText(MyPageActivity.this, getString(R.string.mypage_score_backup_not_ready),Toast.LENGTH_LONG).show();
             }else {
-                Toast.makeText(MyPageActivity.this, "Backing up all the scores to local storage..", Toast.LENGTH_LONG).show();
-                Toast.makeText(MyPageActivity.this, "Dir: (STORAGE)/Android/data/moe.gc_uwu/", Toast.LENGTH_LONG).show();
+                Toast.makeText(MyPageActivity.this, getString(R.string.mypage_score_backup_starting), Toast.LENGTH_LONG).show();
                 new AsyncGrabData().execute(8);
             }
         }
@@ -348,6 +346,7 @@ public class MyPageActivity extends AppCompatActivity
         } else if (id == R.id.nav_area) {
             Intent intent = new Intent(this, GlobalRankActivity.class);
             intent.putExtra("mode", 1);
+            startActivity(intent);
         } else if(id == R.id.nav_stat) {
             if(mode != 0){
                 Intent intent = new Intent(this, MyPageActivity.class);
@@ -460,7 +459,7 @@ public class MyPageActivity extends AppCompatActivity
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyPageActivity.this, getString(R.string.mypage_exception), Toast.LENGTH_LONG).show();
                     }
                 }else if(params[0] == 3){
                     try {
@@ -474,7 +473,7 @@ public class MyPageActivity extends AppCompatActivity
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyPageActivity.this, getString(R.string.mypage_exception), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -506,54 +505,61 @@ public class MyPageActivity extends AppCompatActivity
 
                         String total_stage = thread.getStat().getJSONObject("stage").getString("all");
                         tmp.append("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
+                        tmp.append(getString(R.string.score) + ": ");
                         if(total_score == last_total_score) {
-                            tmp.append("Score: " + total_score + "\n");
+                            tmp.append(total_score + "\n");
                         } else {
                             if(total_score > last_total_score) {
-                                tmp.append("Score: " + total_score + "(+" + (total_score-last_total_score) + ")\n");
+                                tmp.append(total_score + "(+" + (total_score-last_total_score) + ")\n");
                             } else {
-                                tmp.append("Score: " + total_score + "(" + (total_score-last_total_score) + ")\n");
+                                tmp.append(total_score + "(" + (total_score-last_total_score) + ")\n");
                             }
                         }
+
+                        tmp.append(getString(R.string.avg_score) + ": ");
                         if(avg_score == last_avg_score) {
-                            tmp.append("Avg. Score: " + avg_score + "\n");
+                            tmp.append(avg_score + "\n");
                         } else {
                             if(avg_score > last_avg_score) {
-                                tmp.append("Avg. Score: " + avg_score + "(+" + (avg_score-last_avg_score) + ")\n");
+                                tmp.append(avg_score + "(+" + (avg_score-last_avg_score) + ")\n");
                             } else {
-                                tmp.append("Avg. Score: " + avg_score + "(" + (avg_score-last_avg_score) + ")\n");
+                                tmp.append(avg_score + "(" + (avg_score-last_avg_score) + ")\n");
                             }
                         }
 
-                        tmp.append("Played Songs: " + thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
+                        tmp.append(getString(R.string.played_songs) + ": ");
+                        tmp.append(thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
                         tmp.append(thread.getStat().getJSONObject("player_data").getString("total_music") + "\n");
+
+                        tmp.append(getString(R.string.rank) + ": ");
                         if(last_rank == rank) {
-                            tmp.append("Rank: " + rank + "\n");
+                            tmp.append(rank + "\n");
                         } else {
                             if(rank > last_rank) {
-                                tmp.append("Rank: " + rank + "(+" + (rank-last_rank) + ")\n");
+                                tmp.append(rank + "(+" + (rank-last_rank) + ")\n");
                             } else {
-                                tmp.append("Rank: " + rank + "(" + (rank-last_rank) + ")\n");
+                                tmp.append(rank + "(" + (rank-last_rank) + ")\n");
                             }
                         }
-                        tmp.append("Avatar: " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
-                        tmp.append("Title: " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
-                        tmp.append("Trophy: " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
-                        tmp.append("Trophy Rank: " + thread.getStat().getJSONObject("player_data").getString("trophy_rank") + "\n\n");
-                        tmp.append("Cleared: " + thread.getStat().getJSONObject("stage").getString("clear") + " / " + total_stage + "\n");
-                        tmp.append("No Miss: " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
-                        tmp.append("Full Chain: " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
-                        tmp.append("Perfect: " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
-                        tmp.append("Rank S  : " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
-                        tmp.append("Rank S+ : " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
-                        tmp.append("Rank S++: " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
+
+                        tmp.append(getString(R.string.avatar) + ": " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
+                        tmp.append(getString(R.string.title) + ": " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
+                        tmp.append(getString(R.string.trophy) +": " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
+                        tmp.append(getString(R.string.trophy_rank) + ": " + thread.getStat().getJSONObject("player_data").getString("trophy_rank") + "\n\n");
+                        tmp.append(getString(R.string.cleared) + ": " + thread.getStat().getJSONObject("stage").getString("clear") + " / " + total_stage + "\n");
+                        tmp.append(getString(R.string.nomiss) + ": " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
+                        tmp.append(getString(R.string.fullchain) + ": " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
+                        tmp.append(getString(R.string.perfect) + ": " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
+                        tmp.append(getString(R.string.rankS) + "  : " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
+                        tmp.append(getString(R.string.rankSS) + " : " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
+                        tmp.append(getString(R.string.rankSSS) + ": " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
 
                         if(thread.getStat().getJSONObject("player_data").getBoolean("friendApplication")){
-                            Toast.makeText(MyPageActivity.this, "Friend request received!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyPageActivity.this, getString(R.string.friend_request_true), Toast.LENGTH_LONG).show();
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
-                        Toast.makeText(MyPageActivity.this, "Error when making request, wrong password?",Toast.LENGTH_LONG).show();
+                        Toast.makeText(MyPageActivity.this, getString(R.string.mypage_exception),Toast.LENGTH_LONG).show();
                     }
 
                     // todo: insert card id along with data for users with multiple cards
@@ -576,31 +582,31 @@ public class MyPageActivity extends AppCompatActivity
                     top.setVisibility(View.GONE);
                     listView.setVisibility(View.VISIBLE);
                 }else if(mode == 1 && backupF){
-                    Toast.makeText(MyPageActivity.this, "All score data saved!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MyPageActivity.this, getString(R.string.mypage_scores_saved), Toast.LENGTH_LONG).show();
                 }else if(mode == 2){
                     JSONObject res = thread.getStat();
                     tmp = new StringBuilder();
                     tmp.append("\n\n");
                     if(res.getInt("status") != 0){
                         Toast.makeText(MyPageActivity.this,
-                                "Failed to get data!\nMaybe there's no event now?", Toast.LENGTH_LONG).show();
+                                getString(R.string.mypage_event_exception), Toast.LENGTH_LONG).show();
                     }else{
                         JSONObject data = res.getJSONObject("event_data");
                         tmp.append(data.getString("title_name") + "\n");
                         tmp.append(data.getString("open_date") + "~" + data.getString("close_date") + "\n\n");
 
                         if (data.isNull("user_event_data")) {
-                            tmp.append("Not participated.");
+                            tmp.append(getString(R.string.mypage_event_not_participated));
                         } else {
-                            tmp.append("Rank: " + data.getJSONObject("user_event_data").getString("rank") + "\n");
-                            tmp.append("Points: " + data.getJSONObject("user_event_data").getString("event_point") + "\n\n");
+                            tmp.append(getString(R.string.rank) + ": " + data.getJSONObject("user_event_data").getString("rank") + "\n");
+                            tmp.append(getString(R.string.mypage_event_points) + ": " + data.getJSONObject("user_event_data").getString("event_point") + "\n\n");
 
                             // todo: complete the award section, fuck taito for all the stupid data format
                             JSONObject award_data = data.getJSONObject("user_event_data").getJSONObject("award_data");
-                            tmp.append("Awards:\n\n");
+                            tmp.append(getString(R.string.mypage_event_awards) + ":\n\n");
 
                             if (!award_data.isNull("title_award")) {
-                                tmp.append("Title(s):\n");
+                                tmp.append(getString(R.string.title) + ":\n");
                                 for (int i = 0; i < award_data.getJSONArray("title_award").length(); i++) {
                                     tmp.append(award_data.getJSONArray("title_award").get(i) + "\n");
                                 }
@@ -609,7 +615,7 @@ public class MyPageActivity extends AppCompatActivity
 
                             if (!award_data.isNull("item_award")) {
                                 String item, count;
-                                tmp.append("Item(s):\n");
+                                tmp.append(getString(R.string.mypage_event_item) + ":\n");
                                 for (int i = 11; award_data.getJSONObject("item_award").has(String.valueOf(i)); i++) {
                                     item = award_data.getJSONObject("item_award").getJSONObject(String.valueOf(i)).getString("item_name");
                                     count = award_data.getJSONObject("item_award").getJSONObject(String.valueOf(i)).getString("item_num");
@@ -617,10 +623,11 @@ public class MyPageActivity extends AppCompatActivity
                                 }
                             }
 
-                            tmp.append("\nTrophies: " + award_data.getString("trophy_num") + "\n");
+                            tmp.append("\n" + getString(R.string.mypage_event_trophies));
+                            tmp.append(": " + award_data.getString("trophy_num") + "\n\n");
 
                             if (!res.isNull("vicinity_ranking_data")) {
-                                tmp.append("\nPlayers near your current rank:\n");
+                                tmp.append(getString(R.string.mypage_event_near_rank) + ":\n");
                                 for (int i = 0; i < res.getJSONArray("vicinity_ranking_data").length(); i++) {
                                     tmp.append(res.getJSONArray("vicinity_ranking_data").getJSONObject(i).getString("rank") + ". ");
                                     tmp.append(res.getJSONArray("vicinity_ranking_data").getJSONObject(i).getString("player_name") + " / BP: ");
@@ -634,7 +641,7 @@ public class MyPageActivity extends AppCompatActivity
 
                 }else if(mode == 3){
                     if(thread.getStat().getInt("status") != 0){
-                        top.setText("\n\nSomething is wrong, retry later or contact the developer.");
+                        top.setText("\n\n" + getString(R.string.mypage_connection_error));
                     }else{
                         fAdapter = new friendListAdapter(friendList, getApplicationContext());
                         listView.setAdapter(fAdapter);

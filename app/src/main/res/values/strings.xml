@@ -13,6 +13,7 @@
     <string name="app_desc">Groove Coaster \nData App(?)\n\nCurrently in beta\n Contact me for bug reports pl0x</string>
     <string name="app_desc_contact">Twitter: https://twitter.com/HenTaku_pub\n\nTelegram: https://t.me/CirnoHtK</string>
     <string name="title_activity_login">Login</string>
+
     <!-- Strings related to login -->
     <string name="prompt_id">Card ID</string>
     <string name="prompt_password">Password</string>
@@ -28,4 +29,51 @@
     <string name="title_activity_monthly_rank">MonthlyRankActivity</string>
     <string name="title_activity_my_friend">MyFriendActivity</string>
     <string name="title_activity_monthly_stat">MonthlyStatActivity</string>
+    <string name="monthly">Monthly</string>
+    <string name="scores">Scores</string>
+    <string name="stats">Stats</string>
+    <string name="event">Event</string>
+    <string name="friends">Friends</string>
+    <string name="area">Area</string>
+    <string name="global">Global</string>
+    <string name="public_ranking">Public ranking</string>
+    <string name="my_page">My Page</string>
+
+    <!-- My Page specific strings -->
+    <string name="score">Score</string>
+    <string name="avg_score">Avg. Score</string>
+    <string name="played_songs">Played Songs</string>
+    <string name="rank">Rank</string>
+    <string name="avatar">Avatar</string>
+    <string name="title">Title</string>
+    <string name="trophy">Trophy</string>
+    <string name="trophy_rank">Trophy Rank</string>
+    <string name="cleared">Cleared</string>
+    <string name="nomiss">No Miss</string>
+    <string name="fullchain">Full Chain</string>
+    <string name="perfect">Perfect</string>
+    <string name="rankS">Rank S</string>
+    <string name="rankSS">Rank S+</string>
+    <string name="rankSSS">Rank S++</string>
+
+    <string name="mypage_event_not_participated">Not participated.</string>
+    <string name="mypage_event_points">Points</string>
+    <string name="mypage_event_awards">Awards</string>
+    <string name="mypage_event_item">Item</string>
+    <string name="mypage_event_trophies">Trophies</string>
+    <string name="mypage_event_near_rank">Players near your current rank</string>
+
+    <string name="mypage_score_rating">Rating</string>
+    <string name="mypage_score_play_count">Play Count</string>
+    <string name="mypage_score_max_chain">Max Chain</string>
+
+    <string name="friend_request_true">Friend request received!</string>
+    <string name="mypage_exception">Error when making request, wrong password?</string>
+    <string name="mypage_score_backup_not_ready">Fetch song list before back things up</string>
+    <string name="mypage_score_backup_starting">"Backing up all the scores to local storage..\nDir: (STORAGE)/Android/data/moe.gc_uwu/"</string>
+    <string name="mypage_scores_saved">All score data saved!</string>
+    <string name="mypage_event_exception">Failed to get data!\nMaybe there\'s no event now?</string>
+    <string name="mypage_connection_error">Something is wrong, if retry doesn\'t work, contact the developer.</string>
+    <string name="mypage_cookie_error">Cookie is invalid! Tried restart the app?</string>
+    <string name="mypage_response_error">Error encountered when making request</string>
 </resources>

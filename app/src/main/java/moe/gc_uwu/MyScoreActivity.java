@@ -43,32 +43,36 @@ public class MyScoreActivity extends AppCompatActivity {
         extra_t = findViewById(R.id.text_extra);
 
 
-        String tmp = "Score: ";
-        tmp += (data.getString("s_score") + "    Rating: " + data.getString("s_rate") + "\n");
-        tmp += ("Play Count: " + data.getString("s_pc") + "    Max Chain: " + data.getString("s_chain") + "\n");
-        tmp += ("Rank: " + data.getString("s_rank") + "\n\n");
+        String tmp = getString(R.string.score) + ": ";
+        tmp += (data.getString("s_score") + "    " + getString(R.string.mypage_score_rating) + ": " + data.getString("s_rate") + "\n");
+        tmp += (getString(R.string.mypage_score_play_count) + ": " + data.getString("s_pc") + "    " +
+                getString(R.string.mypage_score_max_chain) + ": " + data.getString("s_chain") + "\n");
+        tmp += (getString(R.string.rank) + ": " + data.getString("s_rank") + "\n\n");
         simple_t.append("    [" + data.getString("s_stat") + "]");
         simple.setText(tmp);
 
-        tmp = "Score: ";
-        tmp += (data.getString("n_score") + "    Rating: " + data.getString("n_rate") + "\n");
-        tmp += ("Play Count: " + data.getString("n_pc") + "    Max Chain: " + data.getString("n_chain") + "\n");
-        tmp += ("Rank: " + data.getString("n_rank") + "\n\n");
+        tmp = getString(R.string.score) + ": ";
+        tmp += (data.getString("n_score") + "    " + getString(R.string.mypage_score_rating) + ": " + data.getString("n_rate") + "\n");
+        tmp += (getString(R.string.mypage_score_play_count) + ": " + data.getString("n_pc") + "    " +
+                getString(R.string.mypage_score_max_chain) + ": " + data.getString("n_chain") + "\n");
+        tmp += (getString(R.string.rank) + ": " + data.getString("n_rank") + "\n\n");
         normal_t.append("    [" + data.getString("n_stat") + "]");
         normal.setText(tmp);
 
-        tmp = "Score: ";
-        tmp += (data.getString("h_score") + "    Rating: " + data.getString("h_rate") + "\n");
-        tmp += ("Play Count: " + data.getString("h_pc") + "    Max Chain: " + data.getString("h_chain") + "\n");
-        tmp += ("Rank: " + data.getString("h_rank") + "\n\n");
+        tmp = getString(R.string.score) + ": ";
+        tmp += (data.getString("h_score") + "    " + getString(R.string.mypage_score_rating) + ": " + data.getString("h_rate") + "\n");
+        tmp += (getString(R.string.mypage_score_play_count) + ": " + data.getString("h_pc") + "    " +
+                getString(R.string.mypage_score_max_chain) + ": " + data.getString("h_chain") + "\n");
+        tmp += (getString(R.string.rank) + ": " + data.getString("h_rank") + "\n\n");
         hard_t.append("    [" + data.getString("h_stat") + "]");
         hard.setText(tmp);
 
         if(data.getBoolean("hasEx")) {
-            tmp = "Score: ";
-            tmp += (data.getString("e_score") + "    Rating: " + data.getString("e_rate") + "\n");
-            tmp += ("Play Count: " + data.getString("e_pc") + "    Max Chain: " + data.getString("e_chain") + "\n");
-            tmp += ("Rank: " + data.getString("e_rank") + "\n\n");
+            tmp = getString(R.string.score) + ": ";
+            tmp += (data.getString("e_score") + "    " + getString(R.string.mypage_score_rating) + ": " + data.getString("e_rate") + "\n");
+            tmp += (getString(R.string.mypage_score_play_count) + ": " + data.getString("e_pc") + "    " +
+                    getString(R.string.mypage_score_max_chain) + ": " + data.getString("e_chain") + "\n");
+            tmp += (getString(R.string.rank) + ": " + data.getString("e_rank") + "\n\n");
             extra_t.append("    [" + data.getString("e_stat") + "]");
             extra.setText(tmp);
         }else{

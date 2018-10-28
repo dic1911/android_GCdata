@@ -4,42 +4,42 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item android:title="Public ranking">
+        <item android:title="@string/public_ranking">
             <menu>
                 <item
                     android:id="@+id/nav_global"
                     android:icon="@drawable/ic_worldwide"
-                    android:title="Global" />
+                    android:title="@string/global" />
                 <item
                     android:id="@+id/nav_monthly"
                     android:icon="@drawable/ic_calendar"
-                    android:title="Monthly" />
+                    android:title="@string/monthly" />
                 <item
                     android:id="@+id/nav_area"
                     android:icon="@drawable/ic_pin"
-                    android:title="Area" />
+                    android:title="@string/area" />
             </menu>
         </item>
     </group>
 
-    <item android:title="My Page">
+    <item android:title="@string/my_page">
         <menu>
             <item
                 android:id="@+id/nav_stat"
                 android:icon="@drawable/ic_user"
-                android:title="Stats" />
+                android:title="@string/stats" />
             <item
                 android:id="@+id/nav_score"
                 android:icon="@drawable/ic_star"
-                android:title="Scores" />
+                android:title="@string/scores" />
             <item
                 android:id="@+id/nav_event"
                 android:icon="@drawable/ic_star2"
-                android:title="Event" />
+                android:title="@string/event" />
             <item
                 android:id="@+id/nav_friend"
                 android:icon="@drawable/ic_friends"
-                android:title="Friends" />
+                android:title="@string/friends" />
         </menu>
     </item>
 
