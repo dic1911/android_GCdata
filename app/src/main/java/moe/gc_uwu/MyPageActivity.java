@@ -600,7 +600,7 @@ public class MyPageActivity extends AppCompatActivity
                             tmp.append("Awards:\n\n");
 
                             if (!award_data.isNull("title_award")) {
-                                tmp.append("Title(s): ");
+                                tmp.append("Title(s):\n");
                                 for (int i = 0; i < award_data.getJSONArray("title_award").length(); i++) {
                                     tmp.append(award_data.getJSONArray("title_award").get(i) + "\n");
                                 }
@@ -609,17 +609,25 @@ public class MyPageActivity extends AppCompatActivity
 
                             if (!award_data.isNull("item_award")) {
                                 String item, count;
-                                tmp.append("Item(s): ");
-                                for (int i = 11; data.getJSONObject("user_event_data").getJSONObject("item_award").has(String.valueOf(i)); i++) {
+                                tmp.append("Item(s):\n");
+                                for (int i = 11; award_data.getJSONObject("item_award").has(String.valueOf(i)); i++) {
                                     item = award_data.getJSONObject("item_award").getJSONObject(String.valueOf(i)).getString("item_name");
                                     count = award_data.getJSONObject("item_award").getJSONObject(String.valueOf(i)).getString("item_num");
                                     tmp.append(item + " x " + count + "\n");
                                 }
                             }
 
-                            tmp.append("\n\n");
+                            tmp.append("\nTrophies: " + award_data.getString("trophy_num") + "\n");
 
-                            tmp.append("Trophies: " + award_data.getString("trophy_num") + "\n");
+                            if (!res.isNull("vicinity_ranking_data")) {
+                                tmp.append("\nPlayers near your current rank:\n");
+                                for (int i = 0; i < res.getJSONArray("vicinity_ranking_data").length(); i++) {
+                                    tmp.append(res.getJSONArray("vicinity_ranking_data").getJSONObject(i).getString("rank") + ". ");
+                                    tmp.append(res.getJSONArray("vicinity_ranking_data").getJSONObject(i).getString("player_name") + " / BP: ");
+                                    tmp.append(res.getJSONArray("vicinity_ranking_data").getJSONObject(i).getString("event_point") + "\n");
+
+                                }
+                            }
                         }
                         top.setText(tmp);
                     }
