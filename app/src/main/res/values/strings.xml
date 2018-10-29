@@ -13,6 +13,7 @@
     <string name="app_desc">Groove Coaster \nData App(?)\n\nCurrently in beta\n Contact me for bug reports pl0x</string>
     <string name="app_desc_contact">Twitter: https://twitter.com/HenTaku_pub\n\nTelegram: https://t.me/CirnoHtK</string>
     <string name="title_activity_login">Login</string>
+    <string name="loading">Loading...</string>
 
     <!-- Strings related to login -->
     <string name="prompt_id">Card ID</string>
@@ -42,6 +43,7 @@
     <!-- My Page specific strings -->
     <string name="score">Score</string>
     <string name="avg_score">Avg. Score</string>
+    <string name="total_avg_score">Avg. Score(Total)</string>
     <string name="played_songs">Played Songs</string>
     <string name="rank">Rank</string>
     <string name="avatar">Avatar</string>
@@ -76,4 +78,6 @@
     <string name="mypage_connection_error">Something is wrong, if retry doesn\'t work, contact the developer.</string>
     <string name="mypage_cookie_error">Cookie is invalid! Tried restart the app?</string>
     <string name="mypage_response_error">Error encountered when making request</string>
+    <string name="mypage_monthly_unknown_name">Please load basic stats once before using this function.</string>
+    <string name="mypage_song_not_played">You haven\'t play this song.</string>
 </resources>

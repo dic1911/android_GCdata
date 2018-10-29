@@ -16,6 +16,8 @@ import java.io.OutputStreamWriter;
 import java.net.CookieManager;
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
+
 public class scoreBackupThread extends Thread implements Runnable {
 
     Context context;
@@ -24,6 +26,11 @@ public class scoreBackupThread extends Thread implements Runnable {
     String friendHash;
     String result;
     StringBuilder preres;
+
+    Boolean saveFile;
+
+    volatile int count;
+    volatile int total_score;
 
     ArrayList<musicTemplate> songList;
 
@@ -35,6 +42,7 @@ public class scoreBackupThread extends Thread implements Runnable {
         this.cookieManager = cookieManager;
         this.songList = songList;
         this.friendHash = "";
+        this.saveFile = true;
 
         result = "id,song,simple_mk,simple_rt,simple_sc,sp_chain,simple_pc,sp_rank,normal_mk,normal_rt,normal_sc,nm_chain,normal_pc,nm_rank,hard_mk,hard_rt,hard_sc,hd_chain,hard_pc,hd_rank,extra_mk,extra_rt,extra_sc,ex_chain,extra_pc,ex_rank\n";
     }
@@ -45,8 +53,22 @@ public class scoreBackupThread extends Thread implements Runnable {
         this.cookieManager = cookieManager;
         this.songList = songList;
         this.friendHash = friendHash;
+        this.saveFile = true;
 
         result = "id,song,simple_mk,simple_rt,simple_sc,sp_chain,simple_pc,sp_rank,normal_mk,normal_rt,normal_sc,nm_chain,normal_pc,nm_rank,hard_mk,hard_rt,hard_sc,hd_chain,hard_pc,hd_rank,extra_mk,extra_rt,extra_sc,ex_chain,extra_pc,ex_rank\n";
+    }
+
+    public scoreBackupThread(Context context, String file, CookieManager cookieManager, ArrayList<musicTemplate> songList, boolean saveFile){
+        this.context = context;
+        this.file = file;
+        this.cookieManager = cookieManager;
+        this.songList = songList;
+        this.friendHash = "";
+        this.saveFile = saveFile;
+        this.count = 0;
+        this.total_score = 0;
+
+        result = "";
     }
 
     private String getDiffStat(JSONObject data){
@@ -69,6 +91,10 @@ public class scoreBackupThread extends Thread implements Runnable {
 
     private void scoreDataHandler(StringBuilder target, mypageThread thread){
         try {
+            if (thread.getStat().isNull("music_detail")){
+                // no data to process here
+                return;
+            }
             JSONObject detail = thread.getStat().getJSONObject("music_detail");
             JSONArray rank = detail.getJSONArray("user_rank");
             JSONObject tmp;
@@ -85,6 +111,8 @@ public class scoreBackupThread extends Thread implements Runnable {
                 tmp = detail.getJSONObject("simple_result_data");
                 target.append(getDiffStat(tmp) + "," + tmp.getString("rating") + "," + tmp.getString("score") + "," +
                         tmp.getString("max_chain") + "," + tmp.getString("play_count") + ",");
+                count++;
+                total_score += parseInt(tmp.getString("score"));
                 if(!rank.isNull(0)){
                     target.append(rank.getJSONObject(0).getString("rank") + ",");
                 }else{
@@ -97,6 +125,8 @@ public class scoreBackupThread extends Thread implements Runnable {
                 tmp = detail.getJSONObject("normal_result_data");
                 target.append(getDiffStat(tmp) + "," + tmp.getString("rating") + "," + tmp.getString("score") + "," +
                         tmp.getString("max_chain") + "," + tmp.getString("play_count") + ",");
+                count++;
+                total_score += parseInt(tmp.getString("score"));
                 if(!rank.isNull(1)){
                     target.append(rank.getJSONObject(1).getString("rank") + ",");
                 }else{
@@ -109,6 +139,8 @@ public class scoreBackupThread extends Thread implements Runnable {
                 tmp = detail.getJSONObject("hard_result_data");
                 target.append(getDiffStat(tmp) + "," + tmp.getString("rating") + "," + tmp.getString("score") + "," +
                         tmp.getString("max_chain") + "," + tmp.getString("play_count") + ",");
+                count++;
+                total_score += parseInt(tmp.getString("score"));
                 if(!rank.isNull(2)){
                     target.append(rank.getJSONObject(2).getString("rank") + ",");
                 }else{
@@ -122,6 +154,8 @@ public class scoreBackupThread extends Thread implements Runnable {
                 tmp = detail.getJSONObject("extra_result_data");
                 target.append(getDiffStat(tmp) + "," + tmp.getString("rating") + "," + tmp.getString("score") + "," +
                         tmp.getString("max_chain") + "," + tmp.getString("play_count") + ",");
+                count++;
+                total_score += parseInt(tmp.getString("score"));
                 if(!rank.isNull(3)) {
                     target.append(rank.getJSONObject(3).getString("rank"));
                 }
@@ -180,10 +214,11 @@ public class scoreBackupThread extends Thread implements Runnable {
         }
         try {
            // outputStreamWriter = new OutputStreamWriter(context.openFileOutput((file.getName()), Context.MODE_PRIVATE));
-            fos = new FileOutputStream(new File(file), false);
-            //new FileOutputStream (new File($PATH)), true);
-            fos.write(preres.toString().getBytes());
-            Log.d("GCdata-score_bkp", "Done!");
+            if (saveFile) {
+                fos = new FileOutputStream(new File(file), false);
+                fos.write(preres.toString().getBytes());
+                Log.d("GCdata-score_bkp", "Done!");
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

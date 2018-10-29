@@ -133,9 +133,11 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("mode",0);
             startActivity(intent);
         } else if (id == R.id.nav_score) {
-            //Toast.makeText(MainActivity.this, "Not implemented",Toast.LENGTH_LONG).show();
             Intent intent = new Intent(this, MyPageActivity.class);
             intent.putExtra("mode",1);
+            startActivity(intent);
+        } else if (id == R.id.nav_monthly_stat) {
+            Intent intent = new Intent(this, MonthlyStatActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_event) {
             Intent intent = new Intent(this, MyPageActivity.class);

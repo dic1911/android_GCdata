@@ -33,6 +33,10 @@
                 android:icon="@drawable/ic_star"
                 android:title="@string/scores" />
             <item
+                android:id="@+id/nav_monthly_stat"
+                android:icon="@drawable/ic_calendar"
+                android:title="@string/monthly" />
+            <item
                 android:id="@+id/nav_event"
                 android:icon="@drawable/ic_star2"
                 android:title="@string/event" />

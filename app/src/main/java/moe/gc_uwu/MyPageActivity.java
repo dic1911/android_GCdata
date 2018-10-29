@@ -361,6 +361,9 @@ public class MyPageActivity extends AppCompatActivity
                 intent.putExtra("mode", 1);
                 startActivity(intent);
             }
+        } else if (id == R.id.nav_monthly_stat) {
+            Intent intent = new Intent(this, MonthlyStatActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_event) {
             if(mode != 2) {
                 Intent intent = new Intent(this, MyPageActivity.class);
@@ -504,6 +507,9 @@ public class MyPageActivity extends AppCompatActivity
                             }
                             c.close();
                         }
+
+                        pref_edit.putString("name", thread.getStat().getJSONObject("player_data").getString("player_name"));
+                        pref_edit.commit();
 
                         String total_stage = thread.getStat().getJSONObject("stage").getString("all");
                         tmp.append("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
