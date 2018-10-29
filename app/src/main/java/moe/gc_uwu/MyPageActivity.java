@@ -252,8 +252,10 @@ public class MyPageActivity extends AppCompatActivity
             }
         });
 
-        top.setText("\n\nLoading...");
-        new AsyncGrabData().execute(mode);
+        if (ready) {
+            top.setText("\n\nLoading...");
+            new AsyncGrabData().execute(mode);
+        }
 
         fetch.setOnTouchListener(new View.OnTouchListener() {
             @Override
