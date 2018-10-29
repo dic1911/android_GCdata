@@ -29,6 +29,10 @@
 
 ### Changelog (since v0.3.6)
 
+**v0.4.0**
+1. Added monthly stats
+2. Minor bug fix
+
 **v0.3.8**
 1. Event stats fixed
 2. Fetch data on activity start
