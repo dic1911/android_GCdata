@@ -241,6 +241,7 @@ public class MonthlyStatActivity extends AppCompatActivity
 
         int mode;
         int firstScore;
+        Boolean notPlayed = false;
 
         @Override
         protected String doInBackground(Integer... params) {
@@ -286,63 +287,68 @@ public class MonthlyStatActivity extends AppCompatActivity
                 }
                 monthly_score_total = thread0.total_score;
                 score_count = thread0.count;
-                monthly_score_avg = monthly_score_total / score_count;
+                if (score_count != 0)
+                    monthly_score_avg = monthly_score_total / score_count;
+                else
+                    notPlayed = true;
 
                 // find myself in the ranking list
-                String monthly_rank_url = "https://mypage.groovecoaster.jp/sp/json/monthly_ranking.php?id=0&page=";
-                int index = 0;
-                thread = new mypageThread(monthly_rank_url + index);
-                thread.start();
-                try {
-                    thread.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-                rank = -1;
-                try {
-                    period = thread.getStat().getString("title");
-                    firstScore = thread.getStat().getJSONArray("rank").getJSONObject(0).getInt("score");
-                    for (int i = 0; i < 100; i++) {
-                        if (name.equals(thread.getStat().getJSONArray("rank").getJSONObject(i).getString("player_name"))) {
-                            rank = (index*100) + i;
-                            break;
-                        }
+                if (!notPlayed) {
+                    String monthly_rank_url = "https://mypage.groovecoaster.jp/sp/json/monthly_ranking.php?id=0&page=";
+                    int index = 0;
+                    thread = new mypageThread(monthly_rank_url + index);
+                    thread.start();
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
 
-                    // try to search player from the ranking storage in a kinda better way
-                    if (rank == -1){
-                        float p = (float) monthly_score_total / firstScore;
-                        float pages = thread.getStat().getInt("count") / 100;
-                        index = Math.round(p * pages) / 3;
-                    }
-                    while (rank == -1) {
-                        thread = new mypageThread(monthly_rank_url + index);
-                        thread.start();
-                        try {
-                            thread.join();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-
-                        if (monthly_score_total > thread.getStat().getJSONArray("rank").getJSONObject(0).getInt("score")) {
-                            index -= 1;
-                        } else if (monthly_score_total < thread.getStat().getJSONArray("rank")
-                                        .getJSONObject(thread.getStat().getJSONArray("rank").length()-1).getInt("score")) {
-                            index += 1;
-                        } else {
-                            for (int i = 0; i < thread.getStat().getJSONArray("rank").length(); i++) {
-                                if (name.equals(thread.getStat().getJSONArray("rank").getJSONObject(i).getString("player_name"))) {
-                                    rank = (index*100) + i;
-                                    break;
-                                }
+                    rank = -1;
+                    try {
+                        period = thread.getStat().getString("title");
+                        firstScore = thread.getStat().getJSONArray("rank").getJSONObject(0).getInt("score");
+                        for (int i = 0; i < 100; i++) {
+                            if (name.equals(thread.getStat().getJSONArray("rank").getJSONObject(i).getString("player_name"))) {
+                                rank = (index * 100) + i;
+                                break;
                             }
                         }
 
-                    }
+                        // try to search player from the ranking storage in a kinda better way
+                        if (rank == -1) {
+                            float p = (float) monthly_score_total / firstScore;
+                            float pages = thread.getStat().getInt("count") / 100;
+                            index = Math.round(p * pages) / 3;
+                        }
+                        while (rank == -1) {
+                            thread = new mypageThread(monthly_rank_url + index);
+                            thread.start();
+                            try {
+                                thread.join();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
 
-                } catch (Exception e){
-                    e.printStackTrace();
+                            if (monthly_score_total > thread.getStat().getJSONArray("rank").getJSONObject(0).getInt("score")) {
+                                index -= 1;
+                            } else if (monthly_score_total < thread.getStat().getJSONArray("rank")
+                                    .getJSONObject(thread.getStat().getJSONArray("rank").length() - 1).getInt("score")) {
+                                index += 1;
+                            } else {
+                                for (int i = 0; i < thread.getStat().getJSONArray("rank").length(); i++) {
+                                    if (name.equals(thread.getStat().getJSONArray("rank").getJSONObject(i).getString("player_name"))) {
+                                        rank = (index * 100) + i;
+                                        break;
+                                    }
+                                }
+                            }
+
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
             return null;
@@ -356,13 +362,16 @@ public class MonthlyStatActivity extends AppCompatActivity
                 new AsyncGrabData().execute(1);
             } else if (mode == 1) {
                 StringBuilder res = new StringBuilder();
-                res.append(name + "\n");
-                res.append(period + "\n\n");
-                res.append(getString(R.string.score) + ": " + monthly_score_total + "\n");
-                res.append(getString(R.string.avg_score) + ": " + monthly_score_avg + "\n");
-                res.append(getString(R.string.total_avg_score) + ": " + String.valueOf((monthly_score_total / (firstScore/1000000))) + "\n");
-                res.append(getString(R.string.rank) + ": " + rank);
-
+                if (!notPlayed) {
+                    res.append(name + "\n");
+                    res.append(period + "\n\n");
+                    res.append(getString(R.string.score) + ": " + monthly_score_total + "\n");
+                    res.append(getString(R.string.avg_score) + ": " + monthly_score_avg + "\n");
+                    res.append(getString(R.string.total_avg_score) + ": " + String.valueOf((monthly_score_total / (firstScore / 1000000))) + "\n");
+                    res.append(getString(R.string.rank) + ": " + rank);
+                } else {
+                   res.append(getString(R.string.mypage_event_not_participated));
+                }
                 textView.setText(res.toString());
             }
         }
