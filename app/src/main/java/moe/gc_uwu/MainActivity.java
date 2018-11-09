@@ -20,6 +20,7 @@ import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.SubMenu;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -59,8 +60,8 @@ public class MainActivity extends AppCompatActivity
 
         SharedPreferences lang_pref = PreferenceManager.getDefaultSharedPreferences(this);
         Configuration config = this.getResources().getConfiguration();
-
         String lang = lang_pref.getString("locale", "");
+
         if (! "".equals(lang) && ! config.locale.getLanguage().equals(lang)) {
             Locale locale = new Locale(lang);
             Locale.setDefault(locale);
@@ -147,19 +148,15 @@ public class MainActivity extends AppCompatActivity
             }
             return true;
         } else if (id == lang_id) {
-            Toast.makeText(MainActivity.this, getString(R.string.apply_en),Toast.LENGTH_SHORT).show();
             setLocale(this, Locale.ENGLISH);
             updateLanguage(this, Locale.ENGLISH.getLanguage());
             restartApp(this, MainActivity.class);
             //updateViews("en");
         } else if (id == lang_id + 1) {
-            Toast.makeText(MainActivity.this, "中文切換尚未完成\n請自行切換系統語言\n關閉本程式再重新打開",Toast.LENGTH_SHORT).show();
-            //Toast.makeText(MainActivity.this, getString(R.string.apply_zh),Toast.LENGTH_SHORT).show();
-            setLocale(this, Locale.CHINESE);
-            /*updateLanguage(this, Locale.CHINESE.getLanguage());
-            restartApp(this, MainActivity.class);*/
+            setLocale(this, Locale.TAIWAN);
+            updateLanguage(this, Locale.TAIWAN.getLanguage());
+            restartApp(this, MainActivity.class);
         } else if (id == lang_id + 2) {
-            Toast.makeText(MainActivity.this, getString(R.string.apply_jp),Toast.LENGTH_SHORT).show();
             setLocale(this, Locale.JAPAN);
             updateLanguage(this, Locale.JAPAN.getLanguage());
             restartApp(this, MainActivity.class);
@@ -280,11 +277,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = lang_pref.edit();
         Configuration configuration = context.getResources().getConfiguration();
 
-        // temp if statement
-        if (locale.equals(Locale.CHINESE))
-            editor.clear();
-        else
-            editor.putString("locale", locale.toString());
+        editor.putString("locale", locale.toString());
         editor.apply();
         editor.commit();
 

@@ -25,8 +25,7 @@
 1. Complete event stats
 2. Handle network exceptions
 3. Performance improvement
-4. Fix locale switcher for Chinese
-5. Support multiple NESiCA entry
+4. Support multiple NESiCA entry
 
 ### Changelog (since v0.3.6)
 
