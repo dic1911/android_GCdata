@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     /*   Locale changing related function
-          Credit: gunhansancar on GitHub    */
+          Credit: federicoiosue on GitHub    */
 
     @SuppressLint("ApplySharedPref")
     public static Context updateLanguage(Context ctx, String lang) {

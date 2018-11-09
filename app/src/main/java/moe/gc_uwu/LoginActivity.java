@@ -196,7 +196,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
 
-            // TODO: register the new account here.
             Log.d("GCdata-saveLogin", mID);
             Log.d("GCdata-saveLogin", mPassword);
             edit.clear();

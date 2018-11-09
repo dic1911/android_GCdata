@@ -1,5 +1,4 @@
 # GCdata for Android
-(App naming suggestion is welcomed :p)
 
 [Download](https://030.cdpa.nsysu.edu.tw/gcdata/latest.apk)
 
@@ -19,15 +18,21 @@
     1. Basic stats
     2. Score viewer
     3. Score backup
+	4. Monthly stats
 
 ### To-Do (also known bugs)
 
-1. Fix event stats
-2. Sometimes navigation menu doesn't play nice
-3. Handle network exceptions
-4. Performance improvement
+1. Complete event stats
+2. Handle network exceptions
+3. Performance improvement
+4. Fix locale switcher for Chinese
+5. Support multiple NESiCA entry
 
 ### Changelog (since v0.3.6)
+
+**v0.4.1**
+1. Fixed crash when player open Monthly stat page without playing any of the songs
+2. Add Traditional Chinese & Japanese translation
 
 **v0.4.0**
 1. Added monthly stats
