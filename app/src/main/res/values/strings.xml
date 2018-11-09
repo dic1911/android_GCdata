@@ -1,19 +1,27 @@
 <resources>
-    <string name="app_name">GC.030</string>
+    <string name="app_name" translatable="false">GC.030</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Groove Coaster data</string>
-    <string name="nav_header_subtitle">Made with &lt;3 by HenTaku.030</string>
+    <string name="nav_header_subtitle" translatable="false">Made with &lt;3 by HenTaku.030</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_update">Update</string>
-    <string name="title_activity_my_page">MyPageActivity</string>
     <string name="action_settings">Settings</string>
     <string name="action_save_score">Save all score</string>
     <string name="please_login_first">Please login first.</string>
-    <string name="app_desc">Groove Coaster \nData App(?)\n\nCurrently in beta\n Contact me for bug reports pl0x</string>
-    <string name="app_desc_contact">Twitter: https://twitter.com/HenTaku_pub\n\nTelegram: https://t.me/CirnoHtK</string>
+    <string name="app_desc">Groove Coaster \nData App\n\nCurrently in beta\nContact me for bug reports pl0x</string>
+    <string name="app_desc_contact" translatable="false">Twitter: https://twitter.com/HenTaku_pub\n\nTelegram: https://t.me/CirnoHtK</string>
     <string name="title_activity_login">Login</string>
-    <string name="loading">Loading...</string>
+    <string name="loading" translatable="false">Loading...</string>
+    <string name="already_on_latest_ver">You\'re on latest version available!</string>
+
+    <string name="lang" translatable="false">Language</string>
+    <string name="lang_en" translatable="false">English</string>
+    <string name="lang_zh" translatable="false">Chinese</string>
+    <string name="lang_jp" translatable="false">Japanese</string>
+    <string name="apply_en" translatable="false">Setting the language to English</string>
+    <string name="apply_zh" translatable="false">正在將語言切換成中文</string>
+    <string name="apply_jp" translatable="false">言語を日本語で切り替える中</string>
 
     <!-- Strings related to login -->
     <string name="prompt_id">Card ID</string>
@@ -50,13 +58,13 @@
     <string name="title">Title</string>
     <string name="trophy">Trophy</string>
     <string name="trophy_rank">Trophy Rank</string>
-    <string name="cleared">Cleared</string>
-    <string name="nomiss">No Miss</string>
-    <string name="fullchain">Full Chain</string>
-    <string name="perfect">Perfect</string>
-    <string name="rankS">Rank S</string>
-    <string name="rankSS">Rank S+</string>
-    <string name="rankSSS">Rank S++</string>
+    <string name="cleared" translatable="false">Cleared</string>
+    <string name="nomiss" translatable="false">No Miss</string>
+    <string name="fullchain" translatable="false">Full Chain</string>
+    <string name="perfect" translatable="false">Perfect</string>
+    <string name="rankS" translatable="false">Rank S</string>
+    <string name="rankSS" translatable="false">Rank S+</string>
+    <string name="rankSSS" translatable="false">Rank S++</string>
 
     <string name="mypage_event_not_participated">Not participated.</string>
     <string name="mypage_event_points">Points</string>

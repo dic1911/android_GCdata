@@ -11,7 +11,8 @@
         android:icon="@mipmap/ic_linka"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.NoActionBar">
+        android:theme="@style/Theme.AppCompat.NoActionBar"
+        android:configChanges="layoutDirection|locale">
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
@@ -24,7 +25,7 @@
         <activity android:name=".GlobalRankActivity" />
         <activity
             android:name=".MyPageActivity"
-            android:label="@string/title_activity_my_page" />
+            android:label="@string/my_page" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login" />
