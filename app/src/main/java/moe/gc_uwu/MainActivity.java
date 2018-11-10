@@ -61,13 +61,27 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences lang_pref = PreferenceManager.getDefaultSharedPreferences(this);
         Configuration config = this.getResources().getConfiguration();
         String lang = lang_pref.getString("locale", "");
+        Boolean forceLocale = lang_pref.getBoolean("force",false);
+        Boolean refreshed = getIntent().getExtras().getBoolean("refreshed");
 
-        if (! "".equals(lang) && ! config.locale.getLanguage().equals(lang)) {
+        // unified "zh" for Chinese locale
+        if("".equals(lang) && (Locale.TAIWAN.getLanguage().equals(config.locale.getLanguage()) ||
+                Locale.CHINA.getLanguage().equals(config.locale.getLanguage()) ||
+                Locale.SIMPLIFIED_CHINESE.getLanguage().equals(config.locale.getLanguage()) ||
+                Locale.TRADITIONAL_CHINESE.getLanguage().equals(config.locale.getLanguage()))) {
+            Log.d("GCdata-locale", "Chinese locale workaround applied");
+            setLocale(this, Locale.CHINESE);
+            updateLanguage(this, Locale.CHINESE.getLanguage());
+            restartApp(this, MainActivity.class);
+        }
+        if (! "".equals(lang) && (! config.locale.getLanguage().contains(lang) || forceLocale) && !refreshed) {
             Locale locale = new Locale(lang);
             Locale.setDefault(locale);
             config.locale = locale;
             getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+            lang_pref.edit().putBoolean("force", false);
             Intent refresh = new Intent(this, MainActivity.class);
+            refresh.putExtra("refreshed", true);
             startActivity(refresh);
         }
 
@@ -153,8 +167,8 @@ public class MainActivity extends AppCompatActivity
             restartApp(this, MainActivity.class);
             //updateViews("en");
         } else if (id == lang_id + 1) {
-            setLocale(this, Locale.TAIWAN);
-            updateLanguage(this, Locale.TAIWAN.getLanguage());
+            setLocale(this, Locale.CHINESE);
+            updateLanguage(this, Locale.CHINESE.getLanguage());
             restartApp(this, MainActivity.class);
         } else if (id == lang_id + 2) {
             setLocale(this, Locale.JAPAN);
@@ -278,6 +292,10 @@ public class MainActivity extends AppCompatActivity
         Configuration configuration = context.getResources().getConfiguration();
 
         editor.putString("locale", locale.toString());
+        if(locale.getLanguage().contains("zh"))
+            editor.putBoolean("force", true);
+        else
+            editor.putBoolean("force", false);
         editor.apply();
         editor.commit();
 
