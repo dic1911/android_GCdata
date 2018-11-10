@@ -1,5 +1,6 @@
 package moe.gc_uwu;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
@@ -19,6 +20,7 @@ import android.preference.PreferenceManager;
 import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SubMenu;
@@ -250,8 +252,13 @@ public class MainActivity extends AppCompatActivity
                 if(res.getInt("version") > pInfo.versionCode){
                     updateUrl = res.getString("url");
                     updateAvail = true;
-                    Toast.makeText(MainActivity.this, "Update available!\nUse the menu to download the update.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.update_avail),Toast.LENGTH_LONG).show();
                 }
+
+                if (!requestPermission()) {
+                    Toast.makeText(MainActivity.this, getString(R.string.permission_request_denied),Toast.LENGTH_LONG).show();
+                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -335,6 +342,17 @@ public class MainActivity extends AppCompatActivity
 		AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
 		mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 120, mPendingIntent);
         System.exit(0);
+    }
+
+    private boolean requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            return false;
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            return true;
+        }
     }
 
 }
