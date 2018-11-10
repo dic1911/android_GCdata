@@ -29,6 +29,11 @@
 
 ### Changelog (since v0.3.6)
 
+**v0.4.2**
+1. Fixed Monthly stats when the ranking data is not updated
+2. Fixed Chinese locale (code needs to be cleaned tho)
+3. Added permission request for score backup function
+
 **v0.4.1**
 1. Fixed crash when player open Monthly stat page without playing any of the songs
 2. Add Traditional Chinese & Japanese translation
