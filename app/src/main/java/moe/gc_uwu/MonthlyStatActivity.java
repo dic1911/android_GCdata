@@ -321,6 +321,7 @@ public class MonthlyStatActivity extends AppCompatActivity
                             float pages = thread.getStat().getInt("count") / 100;
                             index = Math.round(p * pages) / 3;
                         }
+                        int prev = -1;
                         while (rank == -1) {
                             thread = new mypageThread(monthly_rank_url + index);
                             thread.start();
@@ -343,7 +344,10 @@ public class MonthlyStatActivity extends AppCompatActivity
                                     }
                                 }
                             }
-
+                            if (index == prev)
+                                rank = -2;
+                            else
+                                prev = index;
                         }
 
                     } catch (Exception e) {
@@ -368,7 +372,11 @@ public class MonthlyStatActivity extends AppCompatActivity
                     res.append(getString(R.string.score) + ": " + monthly_score_total + "\n");
                     res.append(getString(R.string.avg_score) + ": " + monthly_score_avg + "\n");
                     res.append(getString(R.string.total_avg_score) + ": " + String.valueOf((monthly_score_total / (firstScore / 1000000))) + "\n");
-                    res.append(getString(R.string.rank) + ": " + rank);
+                    res.append(getString(R.string.rank) + ": ");
+                    if(rank == -2)
+                        res.append("N/A");
+                    else
+                        res.append(rank);
                 } else {
                    res.append(getString(R.string.mypage_event_not_participated));
                 }
