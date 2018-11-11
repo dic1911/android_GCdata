@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         Configuration config = this.getResources().getConfiguration();
         String lang = lang_pref.getString("locale", "");
         Boolean forceLocale = lang_pref.getBoolean("force",false);
-        Boolean refreshed = getIntent().getExtras().getBoolean("refreshed");
+        Boolean refreshed = getIntent().hasExtra("refreshed");
 
         // unified "zh" for Chinese locale
         if("".equals(lang) && (Locale.TAIWAN.getLanguage().equals(config.locale.getLanguage()) ||

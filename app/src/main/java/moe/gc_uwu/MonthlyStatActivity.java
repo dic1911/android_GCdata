@@ -344,7 +344,7 @@ public class MonthlyStatActivity extends AppCompatActivity
                                     }
                                 }
                             }
-                            if (index == prev)
+                            if (index == prev && rank == -1)
                                 rank = -2;
                             else
                                 prev = index;
