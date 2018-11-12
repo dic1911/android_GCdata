@@ -50,4 +50,5 @@
     <string name="mypage_monthly_unknown_name">請先載入一次基本資料再使用本功能</string>
     <string name="mypage_song_not_played">尚未遊玩這首歌</string>
     <string name="already_on_latest_ver">已安裝最新版!</string>
+    <string name="permission_request_denied">未取得儲存空間權限!\n分數備份功能將無法使用</string>
 </resources>
