@@ -22,7 +22,7 @@
     <string name="friends">フレンド</string>
     <string name="area">エリア</string>
     <string name="public_ranking">公開ランキング</string>
-    <string name="score">トータルスコア</string>
+    <string name="score">スコア</string>
     <string name="avg_score">平均スコア</string>
     <string name="total_avg_score">平均スコア(全譜面)</string>
     <string name="played_songs">プレイ済楽曲数</string>
