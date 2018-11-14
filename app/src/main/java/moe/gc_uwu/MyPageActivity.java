@@ -595,9 +595,8 @@ public class MyPageActivity extends AppCompatActivity
                     JSONObject res = thread.getStat();
                     tmp = new StringBuilder();
                     tmp.append("\n\n");
-                    if(res.getInt("status") != 0){
-                        Toast.makeText(MyPageActivity.this,
-                                getString(R.string.mypage_event_exception), Toast.LENGTH_LONG).show();
+                    if(res.getInt("status") != 0 || res.isNull("event_data")){
+                        tmp.append(getString(R.string.mypage_event_exception));
                     }else{
                         JSONObject data = res.getJSONObject("event_data");
                         tmp.append(data.getString("title_name") + "\n");
