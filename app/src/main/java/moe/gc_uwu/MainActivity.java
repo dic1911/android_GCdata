@@ -9,15 +9,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.SyncStateContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
@@ -84,6 +81,7 @@ public class MainActivity extends AppCompatActivity
             lang_pref.edit().putBoolean("force", false);
             Intent refresh = new Intent(this, MainActivity.class);
             refresh.putExtra("refreshed", true);
+            refresh.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(refresh);
         }
 
@@ -101,6 +99,7 @@ public class MainActivity extends AppCompatActivity
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(repo));
                 startActivity(intent);
+                finishAffinity();
             }
         });
 
