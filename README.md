@@ -29,6 +29,9 @@
 
 ### Changelog (since v0.3.6)
 
+**v0.4.4**
+1. Fix score display when rank is null
+
 **v0.4.3**
 1. Fixed double home/main activity caused when applying language option
 2. Potential fix for event page

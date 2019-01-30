@@ -6,8 +6,8 @@ android {
         applicationId "moe.gc_uwu"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 8
-        versionName "0.4.3"
+        versionCode 9
+        versionName "0.4.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
