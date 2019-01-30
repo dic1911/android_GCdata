@@ -88,6 +88,7 @@ public class scoreTemplate {
         }
     }
 
+
     public scoreTemplate(String id, String title, String artist, Boolean hasEx, JSONObject simple, JSONObject normal, JSONObject hard, JSONObject extra, JSONArray rank, JSONObject full){
         this.id = id;
         this.title = title;
@@ -125,7 +126,7 @@ public class scoreTemplate {
                 this.s_score = simple.getString("score");
                 this.s_pc = simple.getString("play_count");
                 this.s_chain = simple.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(0))
+                if(rank == null || full.getJSONArray("user_rank").isNull(0))
                     this.s_rank = "-";
                 else
                     this.s_rank = rank.getJSONObject(0).getString("rank");
@@ -157,7 +158,7 @@ public class scoreTemplate {
                 this.n_score = normal.getString("score");
                 this.n_pc = normal.getString("play_count");
                 this.n_chain = normal.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(1))
+                if(rank == null || full.getJSONArray("user_rank").isNull(1))
                     this.n_rank = "-";
                 else
                     this.n_rank = rank.getJSONObject(1).getString("rank");
@@ -189,7 +190,7 @@ public class scoreTemplate {
                 this.h_score = hard.getString("score");
                 this.h_pc = hard.getString("play_count");
                 this.h_chain = hard.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(2))
+                if(rank == null || full.getJSONArray("user_rank").isNull(2))
                     this.h_rank = "-";
                 else
                     this.h_rank = rank.getJSONObject(2).getString("rank");
@@ -221,7 +222,7 @@ public class scoreTemplate {
                 this.e_score = extra.getString("score");
                 this.e_pc = extra.getString("play_count");
                 this.e_chain = extra.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(3))
+                if(rank == null || full.getJSONArray("user_rank").isNull(3))
                     this.e_rank = "-";
                 else
                     this.e_rank = rank.getJSONObject(3).getString("rank");
@@ -270,7 +271,7 @@ public class scoreTemplate {
                 this.s_score = simple.getString("score");
                 this.s_pc = simple.getString("play_count");
                 this.s_chain = simple.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(0))
+                if(rank == null || full.getJSONArray("user_rank").isNull(0))
                     this.s_rank = "-";
                 else
                     this.s_rank = rank.getJSONObject(0).getString("rank");
@@ -303,7 +304,7 @@ public class scoreTemplate {
                 this.n_score = normal.getString("score");
                 this.n_pc = normal.getString("play_count");
                 this.n_chain = normal.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(1))
+                if(rank == null || full.getJSONArray("user_rank").isNull(1))
                     this.n_rank = "-";
                 else
                     this.n_rank = rank.getJSONObject(1).getString("rank");
@@ -336,7 +337,7 @@ public class scoreTemplate {
                 this.h_score = hard.getString("score");
                 this.h_pc = hard.getString("play_count");
                 this.h_chain = hard.getString("max_chain");
-                if(full.getJSONArray("user_rank").isNull(2))
+                if(rank == null || full.getJSONArray("user_rank").isNull(2))
                     this.h_rank = "-";
                 else
                     this.h_rank = rank.getJSONObject(2).getString("rank");

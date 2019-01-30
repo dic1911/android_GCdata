@@ -216,12 +216,17 @@ public class MyPageActivity extends AppCompatActivity
                             e = detail.getJSONObject("extra_result_data");
                         }
 
+                        JSONArray rankArr = null;
+                        if (!detail.isNull("user_rank")) {
+                            rankArr = detail.getJSONArray("user_rank");
+                        }
+
                         if (hasEx) {
                             song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
-                                    hasEx, s, n, h, e, detail.getJSONArray("user_rank"), detail);
+                                    hasEx, s, n, h, e, rankArr, detail);
                         } else {
                             song = new scoreTemplate(ID, musicList.get(i).getTitle(), detail.getString("artist"),
-                                    hasEx, s, n, h, detail.getJSONArray("user_rank"), detail);
+                                    hasEx, s, n, h, rankArr, detail);
                         }
 
                         Intent scoreIntent = new Intent(MyPageActivity.this, MyScoreActivity.class);
