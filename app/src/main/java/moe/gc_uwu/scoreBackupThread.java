@@ -31,6 +31,8 @@ public class scoreBackupThread extends Thread implements Runnable {
 
     volatile int count;
     volatile int total_score;
+    volatile int err = 0;
+    volatile ArrayList<String> failed;
 
     ArrayList<musicTemplate> songList;
 
@@ -89,7 +91,7 @@ public class scoreBackupThread extends Thread implements Runnable {
         return result;
     }
 
-    private void scoreDataHandler(StringBuilder target, mypageThread thread){
+    private void scoreDataHandler(String id, StringBuilder target, mypageThread thread){
         try {
             if (thread.getStat().isNull("music_detail")){
                 // no data to process here
@@ -161,7 +163,18 @@ public class scoreBackupThread extends Thread implements Runnable {
                 }
             }
             target.append("\n");
-        } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {
+            e.printStackTrace();
+            boolean newErr = true;
+            if (!"0".equals(id)) {
+                for (int i=0; i<failed.size(); i++)
+                    if (failed.get(i).equals(id)) {
+                        newErr = false;
+                    }
+                if (newErr)
+                    failed.add(id);
+            }
+        }
     }
 
     public String getResult(){
@@ -176,11 +189,12 @@ public class scoreBackupThread extends Thread implements Runnable {
 
         String url;
         String music_id;
+        boolean self = friendHash.equals("");
         for(int i=0; i<songList.size(); i++) {
             Log.d("GCdata-score_bkp", String.valueOf(i+1) + "/" + String.valueOf(songList.size()));
 
             music_id = songList.get(i).getId();
-            if(friendHash.equals("")) {
+            if(self) {
                 url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + music_id;
             } else {
                 url = "https://mypage.groovecoaster.jp/sp/json/friend_music_detail.php?music_id=" + music_id + "&hash=" + friendHash;
@@ -191,11 +205,21 @@ public class scoreBackupThread extends Thread implements Runnable {
                 //Toast.makeText(context,"Backup Progress: " + String.valueOf(i+1) + "/" + String.valueOf(songList.size()), Toast.LENGTH_SHORT).show();
                 try {
                     threads[i%4].join();
+                    if (threads[i%4].failed) {
+                        throw new Exception();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
 
-                scoreDataHandler(preres, threads[i%4]);
+                    if (failed == null){
+                        failed = new ArrayList<>();
+                    } else {
+                        Log.d("GCdata-backup-err", String.valueOf(failed.size()));
+                        failed.add(threads[i%4].Url.getQuery().split("=")[1].split("&")[0]);
+                    }
+                }
+                scoreDataHandler(threads[i%4].Url.getQuery().split("=")[1].split("&")[0], preres, threads[i%4]);
+
             }
             threads[i%4] = new mypageThread(url, cookieManager);
             threads[i%4].start();
@@ -205,13 +229,45 @@ public class scoreBackupThread extends Thread implements Runnable {
                 for(int j=0; j<4; j++) {
                     try {
                         threads[j].join();
+                        if (threads[j].failed) {
+                            throw new Exception();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
+
+                        if (failed == null){
+                            failed = new ArrayList<>();
+                        } else {
+                            Log.d("GCdata-backup-err", String.valueOf(failed.size()));
+                            failed.add(threads[i%4].Url.getQuery().split("=")[1].split("&")[0]);
+                        }
                     }
-                    scoreDataHandler(preres, threads[j]);
+                    scoreDataHandler(threads[i%4].Url.getQuery().split("=")[1].split("&")[0], preres, threads[j]);
                 }
             }
         }
+
+        // handle the failed requests
+        while (failed != null && !failed.isEmpty() && err <= 5) {
+            if(self) {
+                url = "https://mypage.groovecoaster.jp/sp/json/music_detail.php?music_id=" + failed.get(0);
+            } else {
+                url = "https://mypage.groovecoaster.jp/sp/json/friend_music_detail.php?music_id=" + failed.get(0) + "&hash=" + friendHash;
+            }
+            threads[0] = new mypageThread(url, cookieManager);
+            threads[0].start();
+            try {
+                threads[0].join();
+            } catch (InterruptedException e) {
+                err++;
+                e.printStackTrace();
+            }
+
+            scoreDataHandler("0", preres, threads[0]);
+            failed.remove(0);
+            err = 0;
+        }
+
         try {
            // outputStreamWriter = new OutputStreamWriter(context.openFileOutput((file.getName()), Context.MODE_PRIVATE));
             if (saveFile) {

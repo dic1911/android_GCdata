@@ -42,6 +42,7 @@
     <string name="mypage_score_backup_not_ready">まずは楽曲リスト取得するください</string>
     <string name="mypage_score_backup_starting">すべての成績をバックアップしている</string>
     <string name="mypage_scores_saved">成績バックアップ完了!</string>
+    <string name="mypage_scores_saved_err">ネットワークエラー、成績バックアップ不完全!</string>
     <string name="mypage_event_exception">資料獲得失敗、イベントは開催中ではないかな?</string>
     <string name="mypage_connection_error">ネットワークエラー、リトライしてください</string>
     <string name="mypage_cookie_error">Cookie無効、アプリを再起動してください</string>

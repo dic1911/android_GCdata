@@ -43,6 +43,7 @@
     <string name="mypage_score_backup_not_ready">請先取得歌曲清單再開始備份</string>
     <string name="mypage_score_backup_starting">正在開始備份所有分數資料…\n目錄: (內部儲存)/Android/data/moe.gc_uwu/</string>
     <string name="mypage_scores_saved">所有分數備份完畢!</string>
+    <string name="mypage_scores_saved_err">連線錯誤次數過多, 分數備份不完整!</string>
     <string name="mypage_event_exception">資料取得失敗! 現在沒有活動?</string>
     <string name="mypage_connection_error">連線錯誤, 請稍後重試</string>
     <string name="mypage_cookie_error">Cookie無效, 請重新打開本程式</string>

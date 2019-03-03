@@ -38,6 +38,7 @@ public class mypageThread extends Thread implements Runnable {
     Response response;
     URL Url;
     JSONObject stat;
+    Boolean failed;
 
     Boolean skipLogin;
     CookieManager cookieManager;
@@ -49,6 +50,7 @@ public class mypageThread extends Thread implements Runnable {
         this.cardID = cardID;
         this.passwd = passwd;
         this.skipLogin = false;
+        this.failed = false;
         try {
             Url = new URL(this.url);
         } catch (MalformedURLException e) {
@@ -62,6 +64,7 @@ public class mypageThread extends Thread implements Runnable {
         this.cardID = cardID;
         this.passwd = passwd;
         this.skipLogin = false;
+        this.failed = false;
         try {
             Url = new URL(this.url);
         } catch (MalformedURLException e) {
@@ -75,6 +78,7 @@ public class mypageThread extends Thread implements Runnable {
         this.cardID = "";
         this.passwd = "";
         this.skipLogin = true;
+        this.failed = false;
         this.cookieManager = cookieManager;
         try {
             Url = new URL(this.url);
@@ -89,6 +93,7 @@ public class mypageThread extends Thread implements Runnable {
         this.cardID = "";
         this.passwd = "";
         this.skipLogin = false;
+        this.failed = false;
         try {
             Url = new URL(this.url);
         } catch (MalformedURLException e) {
@@ -137,6 +142,7 @@ public class mypageThread extends Thread implements Runnable {
 
         } catch (Exception e) {
             e.printStackTrace();
+            this.failed = true;
         }
     }
 

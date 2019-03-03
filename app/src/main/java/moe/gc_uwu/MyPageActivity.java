@@ -393,6 +393,7 @@ public class MyPageActivity extends AppCompatActivity
         StringBuilder tmp;
         boolean backupF;
         String reqURL;
+        scoreBackupThread bkpThread;
 
         @Override
         protected String doInBackground(Integer... params) {
@@ -427,7 +428,6 @@ public class MyPageActivity extends AppCompatActivity
                 }
 
                 File file = new File(getExternalFilesDir(null), filename);
-                scoreBackupThread bkpThread;
                 if(!friendScore) {
                     bkpThread = new scoreBackupThread(MyPageActivity.this, file.getAbsolutePath(), cookieManager, musicList);
                 } else {
@@ -595,7 +595,10 @@ public class MyPageActivity extends AppCompatActivity
                     top.setVisibility(View.GONE);
                     listView.setVisibility(View.VISIBLE);
                 }else if(mode == 1 && backupF){
-                    Toast.makeText(MyPageActivity.this, getString(R.string.mypage_scores_saved), Toast.LENGTH_LONG).show();
+                    if (bkpThread.err == 0)
+                        Toast.makeText(MyPageActivity.this, getString(R.string.mypage_scores_saved), Toast.LENGTH_LONG).show();
+                    else
+                        Toast.makeText(MyPageActivity.this, getString(R.string.mypage_scores_saved_err), Toast.LENGTH_LONG).show();
                 }else if(mode == 2){
                     JSONObject res = thread.getStat();
                     tmp = new StringBuilder();
