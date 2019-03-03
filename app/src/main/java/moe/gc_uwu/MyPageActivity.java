@@ -270,7 +270,7 @@ public class MyPageActivity extends AppCompatActivity
                     new AsyncGrabData().execute(mode);
 
                     //alreadyLoggedIn = true;
-                    dataFetched = true;
+                    ready = false;
                     return true;
                 }
                     return false;
@@ -402,7 +402,6 @@ public class MyPageActivity extends AppCompatActivity
 
                 // grab basic stat
                 thread = new mypageThread(cardID, passwd);
-                thread.start();
             } else if(params[0] == 1) {
                 // grab music list
                 if(!friendScore)
@@ -486,6 +485,13 @@ public class MyPageActivity extends AppCompatActivity
                         Toast.makeText(MyPageActivity.this, getString(R.string.mypage_exception), Toast.LENGTH_LONG).show();
                     }
                 }
+            } else if (params[0] == 0) {
+                thread.start();
+                try {
+                    thread.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             return null;
@@ -495,84 +501,78 @@ public class MyPageActivity extends AppCompatActivity
         protected void onPostExecute(String result) {
             try{
                 if(mode == 0){
-                    try {
-                        thread.join();
+                    JSONObject stat = thread.getStat();
+                    total_score = Integer.parseInt(stat.getJSONObject("player_data").getString("total_score"));
+                    avg_score = stat.getJSONObject("player_data").getInt("average_score");
+                    rank = stat.getJSONObject("player_data").getInt("rank");
 
-                        total_score = Integer.parseInt(thread.getStat().getJSONObject("player_data").getString("total_score"));
-                        avg_score = thread.getStat().getJSONObject("player_data").getInt("average_score");
-                        rank = thread.getStat().getJSONObject("player_data").getInt("rank");
-
-                        if(dbHasData) {
-                            Cursor c = db.rawQuery("SELECT * FROM stats;", null);
-                            Log.d("GCdata-db","Stat.db.size="+c.getCount() + ", Stat.db.colCount=" + c.getColumnCount());
-                            if(c.moveToLast()) {
-                                last_total_score = c.getInt(2);
-                                last_avg_score = c.getInt(3);
-                                last_rank = c.getInt(4);
-                            }
-                            c.close();
+                    if(dbHasData) {
+                        Cursor c = db.rawQuery("SELECT * FROM stats;", null);
+                        Log.d("GCdata-db","Stat.db.size="+c.getCount() + ", Stat.db.colCount=" + c.getColumnCount());
+                        if(c.moveToLast()) {
+                            last_total_score = c.getInt(2);
+                            last_avg_score = c.getInt(3);
+                            last_rank = c.getInt(4);
                         }
+                        c.close();
+                    }
 
-                        pref_edit.putString("name", thread.getStat().getJSONObject("player_data").getString("player_name"));
-                        pref_edit.commit();
+                    pref_edit.putString("name", thread.getStat().getJSONObject("player_data").getString("player_name"));
+                    pref_edit.commit();
 
-                        String total_stage = thread.getStat().getJSONObject("stage").getString("all");
-                        tmp.append("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
-                        tmp.append(getString(R.string.score) + ": ");
-                        if(total_score == last_total_score) {
-                            tmp.append(total_score + "\n");
+                    String total_stage = thread.getStat().getJSONObject("stage").getString("all");
+                    tmp.append("\n\n" + thread.getStat().getJSONObject("player_data").getString("player_name") + "\n\n");
+                    tmp.append(getString(R.string.score) + ": ");
+                    if(total_score == last_total_score) {
+                        tmp.append(total_score + "\n");
+                    } else {
+                        if(total_score > last_total_score) {
+                            tmp.append(total_score + "(+" + (total_score-last_total_score) + ")\n");
                         } else {
-                            if(total_score > last_total_score) {
-                                tmp.append(total_score + "(+" + (total_score-last_total_score) + ")\n");
-                            } else {
-                                tmp.append(total_score + "(" + (total_score-last_total_score) + ")\n");
-                            }
+                            tmp.append(total_score + "(" + (total_score-last_total_score) + ")\n");
                         }
+                    }
 
-                        tmp.append(getString(R.string.avg_score) + ": ");
-                        if(avg_score == last_avg_score) {
-                            tmp.append(avg_score + "\n");
+                    tmp.append(getString(R.string.avg_score) + ": ");
+                    if(avg_score == last_avg_score) {
+                        tmp.append(avg_score + "\n");
+                    } else {
+                        if(avg_score > last_avg_score) {
+                            tmp.append(avg_score + "(+" + (avg_score-last_avg_score) + ")\n");
                         } else {
-                            if(avg_score > last_avg_score) {
-                                tmp.append(avg_score + "(+" + (avg_score-last_avg_score) + ")\n");
-                            } else {
-                                tmp.append(avg_score + "(" + (avg_score-last_avg_score) + ")\n");
-                            }
+                            tmp.append(avg_score + "(" + (avg_score-last_avg_score) + ")\n");
                         }
+                    }
 
-                        tmp.append(getString(R.string.played_songs) + ": ");
-                        tmp.append(thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
-                        tmp.append(thread.getStat().getJSONObject("player_data").getString("total_music") + "\n");
+                    tmp.append(getString(R.string.played_songs) + ": ");
+                    tmp.append(thread.getStat().getJSONObject("player_data").getString("total_play_music") + " / ");
+                    tmp.append(thread.getStat().getJSONObject("player_data").getString("total_music") + "\n");
 
-                        tmp.append(getString(R.string.rank) + ": ");
-                        if(last_rank == rank) {
-                            tmp.append(rank + "\n");
+                    tmp.append(getString(R.string.rank) + ": ");
+                    if(last_rank == rank) {
+                        tmp.append(rank + "\n");
+                    } else {
+                        if(rank > last_rank) {
+                            tmp.append(rank + "(+" + (rank-last_rank) + ")\n");
                         } else {
-                            if(rank > last_rank) {
-                                tmp.append(rank + "(+" + (rank-last_rank) + ")\n");
-                            } else {
-                                tmp.append(rank + "(" + (rank-last_rank) + ")\n");
-                            }
+                            tmp.append(rank + "(" + (rank-last_rank) + ")\n");
                         }
+                    }
 
-                        tmp.append(getString(R.string.avatar) + ": " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
-                        tmp.append(getString(R.string.title) + ": " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
-                        tmp.append(getString(R.string.trophy) +": " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
-                        tmp.append(getString(R.string.trophy_rank) + ": " + thread.getStat().getJSONObject("player_data").getString("trophy_rank") + "\n\n");
-                        tmp.append(getString(R.string.cleared) + ": " + thread.getStat().getJSONObject("stage").getString("clear") + " / " + total_stage + "\n");
-                        tmp.append(getString(R.string.nomiss) + ": " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
-                        tmp.append(getString(R.string.fullchain) + ": " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
-                        tmp.append(getString(R.string.perfect) + ": " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
-                        tmp.append(getString(R.string.rankS) + "  : " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
-                        tmp.append(getString(R.string.rankSS) + " : " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
-                        tmp.append(getString(R.string.rankSSS) + ": " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
+                    tmp.append(getString(R.string.avatar) + ": " + thread.getStat().getJSONObject("player_data").getString("avatar") + "\n");
+                    tmp.append(getString(R.string.title) + ": " + thread.getStat().getJSONObject("player_data").getString("title") + "\n");
+                    tmp.append(getString(R.string.trophy) +": " + thread.getStat().getJSONObject("player_data").getString("total_trophy") + "\n");
+                    tmp.append(getString(R.string.trophy_rank) + ": " + thread.getStat().getJSONObject("player_data").getString("trophy_rank") + "\n\n");
+                    tmp.append(getString(R.string.cleared) + ": " + thread.getStat().getJSONObject("stage").getString("clear") + " / " + total_stage + "\n");
+                    tmp.append(getString(R.string.nomiss) + ": " + thread.getStat().getJSONObject("stage").getString("nomiss") + " / " + total_stage + "\n");
+                    tmp.append(getString(R.string.fullchain) + ": " + thread.getStat().getJSONObject("stage").getString("fullchain") + " / " + total_stage + "\n");
+                    tmp.append(getString(R.string.perfect) + ": " + thread.getStat().getJSONObject("stage").getString("perfect") + " / " + total_stage + "\n\n");
+                    tmp.append(getString(R.string.rankS) + "  : " + thread.getStat().getJSONObject("stage").getString("s") + " / " + total_stage + "\n");
+                    tmp.append(getString(R.string.rankSS) + " : " + thread.getStat().getJSONObject("stage").getString("ss") + " / " + total_stage + "\n");
+                    tmp.append(getString(R.string.rankSSS) + ": " + thread.getStat().getJSONObject("stage").getString("sss") + " / " + total_stage + "\n");
 
-                        if(thread.getStat().getJSONObject("player_data").getBoolean("friendApplication")){
-                            Toast.makeText(MyPageActivity.this, getString(R.string.friend_request_true), Toast.LENGTH_LONG).show();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        Toast.makeText(MyPageActivity.this, getString(R.string.mypage_exception),Toast.LENGTH_LONG).show();
+                    if(thread.getStat().getJSONObject("player_data").getBoolean("friendApplication")){
+                        Toast.makeText(MyPageActivity.this, getString(R.string.friend_request_true), Toast.LENGTH_LONG).show();
                     }
 
                     // todo: insert card id along with data for users with multiple cards
@@ -662,11 +662,13 @@ public class MyPageActivity extends AppCompatActivity
                         listView.setVisibility(View.VISIBLE);
                     }
 
-                }
+               }
 
             }catch(Exception e){
                 e.printStackTrace();
             }
+            dataFetched = true;
+            ready = true;
         }
 
         @Override
