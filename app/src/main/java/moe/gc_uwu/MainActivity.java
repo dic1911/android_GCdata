@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity
     String updateUrl = "";
 
     TextView text;
+    String announcement = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +122,8 @@ public class MainActivity extends AppCompatActivity
     public void onResume(){
         super.onResume();
         text.setText(getString(R.string.app_desc));
+        if (announcement != null)
+            text.append("\n\n" + getString(R.string.announce) + announcement);
     }
 
     @Override
@@ -252,6 +256,11 @@ public class MainActivity extends AppCompatActivity
                     updateUrl = res.getString("url");
                     updateAvail = true;
                     Toast.makeText(MainActivity.this, getString(R.string.update_avail),Toast.LENGTH_LONG).show();
+                }
+
+                if (!res.isNull("announce")) {
+                    announcement = res.getString("announce");
+                    text.append("\n\n" + getString(R.string.announce) + announcement);
                 }
 
                 if (!requestPermission()) {

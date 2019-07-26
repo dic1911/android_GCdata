@@ -54,4 +54,5 @@
     <string name="global">グローバル</string>
     <string name="nav_header_title">Groove Coaster データ</string>
     <string name="permission_request_denied">ストレージ権限取得失敗しました\n成績バックアップは作動不能になる</string>
+    <string name="announce">お知らせ:\n</string>
 </resources>
