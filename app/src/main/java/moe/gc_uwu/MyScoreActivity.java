@@ -18,6 +18,7 @@ public class MyScoreActivity extends AppCompatActivity {
     TextView normal_t;
     TextView hard_t;
     TextView extra_t;
+    TextView last_t;
     Bundle data;
 
     @Override
@@ -42,6 +43,7 @@ public class MyScoreActivity extends AppCompatActivity {
         hard_t = findViewById(R.id.text_hard);
         extra_t = findViewById(R.id.text_extra);
 
+        last_t = findViewById(R.id.text_lastplay);
 
         String tmp = getString(R.string.score) + ": ";
         tmp += (data.getString("s_score") + "    " + getString(R.string.mypage_score_rating) + ": " + data.getString("s_rate") + "\n");
@@ -79,6 +81,10 @@ public class MyScoreActivity extends AppCompatActivity {
             extra_t.setVisibility(View.GONE);
             extra.setVisibility(View.GONE);
         }
+
+        tmp = getString(R.string.mypage_score_last_play) + ":\n" + getIntent().getExtras().getString("last_play");
+        last_t.setText(tmp);
+
     }
 
 }

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name" translatable="false">GC.030</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -70,7 +70,7 @@
     <string name="rankSSS" translatable="false">Rank S++</string>
 
     <string name="mypage_event_not_participated">Not participated.</string>
-    <string name="mypage_event_points">Points</string>
+    <string name="mypage_event_points" tools:ignore="MissingTranslation">Points</string>
     <string name="mypage_event_awards">Awards</string>
     <string name="mypage_event_item">Item</string>
     <string name="mypage_event_trophies">Trophies</string>
@@ -92,4 +92,5 @@
     <string name="mypage_response_error">Error encountered when making request</string>
     <string name="mypage_monthly_unknown_name">Please load basic stats once before using this function.</string>
     <string name="mypage_song_not_played">You haven\'t play this song.</string>
+    <string name="mypage_score_last_play">Timestamp</string>
 </resources>

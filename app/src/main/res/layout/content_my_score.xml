@@ -9,78 +9,88 @@
     tools:showIn="@layout/activity_my_score">
 
 
-
     <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/scrollView3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/text_simple"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
-                android:text="Simple" />
+                android:text="Simple"
+                android:textSize="26sp" />
 
             <TextView
                 android:id="@+id/data_simple"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textSize="24sp"
-                android:text="Simple - data placeholder" />
+                android:text="Simple - data placeholder"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_normal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
-                android:text="Normal" />
+                android:text="Normal"
+                android:textSize="26sp" />
 
             <TextView
                 android:id="@+id/data_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textSize="24sp"
-                android:text="Normal - data placeholder" />
+                android:text="Normal - data placeholder"
+                android:textSize="24sp" />
 
 
             <TextView
                 android:id="@+id/text_hard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
-                android:text="Hard" />
+                android:text="Hard"
+                android:textSize="26sp" />
 
             <TextView
                 android:id="@+id/data_hard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textSize="24sp"
-                android:text="Hard - data placeholder" />
+                android:text="Hard - data placeholder"
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_extra"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="26sp"
-                android:text="Extra" />
+                android:text="Extra"
+                android:textSize="26sp" />
 
             <TextView
                 android:id="@+id/data_extra"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textSize="24sp"
-                android:text="Extra - data placeholder" />
+                android:text="Extra - data placeholder"
+                android:textSize="24sp" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="36dp" />
 
+            <TextView
+                android:id="@+id/text_lastplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DATE placeholder"
+                android:textSize="26sp" />
 
         </LinearLayout>
     </ScrollView>

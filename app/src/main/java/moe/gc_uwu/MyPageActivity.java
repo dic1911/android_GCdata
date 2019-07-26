@@ -231,6 +231,7 @@ public class MyPageActivity extends AppCompatActivity
 
                         Intent scoreIntent = new Intent(MyPageActivity.this, MyScoreActivity.class);
                         song.dataToIntent(scoreIntent);
+                        scoreIntent.putExtra("last_play", musicList.get(i).getDate()); // todo: add last play date string here
                         Log.d("GCdata-score", "Starting score display activity");
                         startActivity(scoreIntent);
                     } catch (Exception e) {
@@ -464,7 +465,8 @@ public class MyPageActivity extends AppCompatActivity
                         int len = songs.length();
                         for (int i = 0; i < len; i++) {
                             musicList.add(new musicTemplate(songs.getJSONObject(i).getString("music_id"),
-                                    songs.getJSONObject(i).getString("music_title")));
+                                    songs.getJSONObject(i).getString("music_title"),
+                                    songs.getJSONObject(i).getString("last_play_time")));
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
