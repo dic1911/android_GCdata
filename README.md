@@ -29,6 +29,14 @@
 
 ### Changelog (since v0.3.6)
 
+**v0.5.1**
+1. Added timestamp display in score page
+2. Updated URL in app
+
+**v0.5.0**
+1. Announcement string on main page
+2. bug fixes
+
 **v0.4.4**
 1. Fix score display when rank is null
 
