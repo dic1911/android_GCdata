@@ -82,9 +82,10 @@ public class MyScoreActivity extends AppCompatActivity {
             extra.setVisibility(View.GONE);
         }
 
-        tmp = getString(R.string.mypage_score_last_play) + ":\n" + getIntent().getExtras().getString("last_play");
-        last_t.setText(tmp);
-
+        if (getIntent().getExtras().getString("last_play") != null) {
+            tmp = getString(R.string.mypage_score_last_play) + ":\n" + getIntent().getExtras().getString("last_play");
+            last_t.setText(tmp);
+        }
     }
 
 }

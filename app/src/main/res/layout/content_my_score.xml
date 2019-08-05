@@ -89,7 +89,7 @@
                 android:id="@+id/text_lastplay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="DATE placeholder"
+                android:text=""
                 android:textSize="26sp" />
 
         </LinearLayout>

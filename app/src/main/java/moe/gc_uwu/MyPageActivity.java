@@ -231,7 +231,8 @@ public class MyPageActivity extends AppCompatActivity
 
                         Intent scoreIntent = new Intent(MyPageActivity.this, MyScoreActivity.class);
                         song.dataToIntent(scoreIntent);
-                        scoreIntent.putExtra("last_play", musicList.get(i).getDate()); // todo: add last play date string here
+                        if (!friendScore)
+                            scoreIntent.putExtra("last_play", musicList.get(i).getDate());
                         Log.d("GCdata-score", "Starting score display activity");
                         startActivity(scoreIntent);
                     } catch (Exception e) {
