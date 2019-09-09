@@ -580,7 +580,7 @@ public class MyPageActivity extends AppCompatActivity
 
                     // todo: insert card id along with data for users with multiple cards
                     long unixTime = System.currentTimeMillis() / 1000L;
-                    if(total_score != last_total_score || avg_score != last_avg_score || rank != last_rank)
+                    if((total_score != last_total_score || avg_score != last_avg_score || rank != last_rank) && total_score != 0)
                         db.execSQL("INSERT INTO stats VALUES(null, " + unixTime + "," + total_score + "," + avg_score + "," + rank + ");");
 
                     if(!dbHasData){
