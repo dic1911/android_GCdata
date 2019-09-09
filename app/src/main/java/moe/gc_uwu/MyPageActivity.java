@@ -34,8 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class MyPageActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MyPageActivity extends BaseActivity {
 
     String cardID;
     String passwd;
@@ -295,16 +294,6 @@ public class MyPageActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         if(mode == 1)
@@ -337,57 +326,6 @@ public class MyPageActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_global) {
-            Intent intent = new Intent(this, GlobalRankActivity.class);
-            intent.putExtra("mode", 0);
-            startActivity(intent);
-        } else if (id == R.id.nav_monthly) {
-            Intent intent = new Intent(this, MonthlyRankActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_area) {
-            Intent intent = new Intent(this, GlobalRankActivity.class);
-            intent.putExtra("mode", 1);
-            startActivity(intent);
-        } else if(id == R.id.nav_stat) {
-            if(mode != 0){
-                Intent intent = new Intent(this, MyPageActivity.class);
-                intent.putExtra("mode",0);
-                startActivity(intent);
-            }
-        } else if (id == R.id.nav_score) {
-            if(mode != 1){
-                Intent intent = new Intent(this, MyPageActivity.class);
-                intent.putExtra("mode", 1);
-                startActivity(intent);
-            }
-        } else if (id == R.id.nav_monthly_stat) {
-            Intent intent = new Intent(this, MonthlyStatActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_event) {
-            if(mode != 2) {
-                Intent intent = new Intent(this, MyPageActivity.class);
-                intent.putExtra("mode", 2);
-                startActivity(intent);
-            }
-        } else if (id == R.id.nav_friend) {
-            if(mode != 3) {
-                Intent intent = new Intent(this, MyPageActivity.class);
-                intent.putExtra("mode", 3);
-                startActivity(intent);
-            }
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private class AsyncGrabData extends AsyncTask<Integer, Void, String> {

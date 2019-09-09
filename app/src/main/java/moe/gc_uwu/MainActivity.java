@@ -42,8 +42,7 @@ import java.util.Locale;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity {
 
     int lang_id = 1000;
     boolean updateAvail = false;
@@ -127,16 +126,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -183,49 +172,6 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_global) {
-            Intent intent = new Intent(this, GlobalRankActivity.class);
-            intent.putExtra("mode", 0);
-            startActivity(intent);
-        } else if (id == R.id.nav_monthly) {
-            Intent intent = new Intent(this, MonthlyRankActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_area) {
-            Intent intent = new Intent(this, GlobalRankActivity.class);
-            intent.putExtra("mode", 1);
-            startActivity(intent);
-        } else if (id == R.id.nav_stat) {
-            Intent intent = new Intent(this, MyPageActivity.class);
-            intent.putExtra("mode",0);
-            startActivity(intent);
-        } else if (id == R.id.nav_score) {
-            Intent intent = new Intent(this, MyPageActivity.class);
-            intent.putExtra("mode",1);
-            startActivity(intent);
-        } else if (id == R.id.nav_monthly_stat) {
-            Intent intent = new Intent(this, MonthlyStatActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_event) {
-            Intent intent = new Intent(this, MyPageActivity.class);
-            intent.putExtra("mode",2);
-            startActivity(intent);
-        } else if (id == R.id.nav_friend) {
-            Intent intent = new Intent(this, MyPageActivity.class);
-            intent.putExtra("mode",3);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private class AsyncCheckUpdate extends AsyncTask<Integer, Void, String> {
