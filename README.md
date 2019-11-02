@@ -29,6 +29,10 @@
 
 ### Changelog (since v0.3.6)
 
+**v0.5.2**
+1. Minor code cleanup
+2. Partial fix for Android Q(sometimes navigation menu doesn't work, relaunch when this happens)
+
 **v0.5.1**
 1. Added timestamp display in score page
 2. Updated URL in app
