@@ -93,4 +93,6 @@
     <string name="mypage_monthly_unknown_name">Please load basic stats once before using this function.</string>
     <string name="mypage_song_not_played">You haven\'t play this song.</string>
     <string name="mypage_score_last_play">Timestamp</string>
+    <string name="monthly_not_avail">Monthly rank isn\\\'t available</string>
+    <string name="try_again_later">Please try again later.</string>
 </resources>

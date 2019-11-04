@@ -1,21 +1,13 @@
 package moe.gc_uwu;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 public class rankingAdapter extends ArrayAdapter<dataTemplate> implements View.OnClickListener{

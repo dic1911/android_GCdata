@@ -56,4 +56,6 @@
     <string name="permission_request_denied">ストレージ権限取得失敗しました\n成績バックアップは作動不能になる</string>
     <string name="announce">お知らせ:\n</string>
     <string name="mypage_score_last_play">タイムスタンプ</string>
+    <string name="monthly_not_avail">月間ランキングアクセスできません</string>
+    <string name="try_again_later">あとでリトライしてくださいw</string>
 </resources>

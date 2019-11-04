@@ -2,9 +2,9 @@ package moe.gc_uwu;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.navigation.NavigationView;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -127,11 +127,12 @@ public class MonthlyRankActivity extends AppCompatActivity implements AdapterVie
                     tmp4 = rank.getJSONObject(i).getString("pref"); //location
                     data.add(new dataTemplate(tmp, tmp2, tmp3, tmp4, false));
                 }
-                adapter = new rankingAdapter(data, getApplicationContext());
-                listView.setAdapter(adapter);
             } catch (Exception e) {
+                data.add(new dataTemplate(getString(R.string.monthly_not_avail), "", "Please try again later", "", false));
                 e.printStackTrace();
             }
+            adapter = new rankingAdapter(data, getApplicationContext());
+            listView.setAdapter(adapter);
         }
 
         @Override
