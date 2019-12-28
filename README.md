@@ -28,6 +28,9 @@
 4. Support multiple NESiCA entry
 
 ### Changelog (since v0.3.6)
+**v0.6.0**
+1. Migrate to AndroidX
+2. Bug fix
 
 **v0.5.2**
 1. Minor code cleanup
