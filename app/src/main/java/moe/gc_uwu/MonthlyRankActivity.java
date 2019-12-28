@@ -128,7 +128,7 @@ public class MonthlyRankActivity extends AppCompatActivity implements AdapterVie
                     data.add(new dataTemplate(tmp, tmp2, tmp3, tmp4, false));
                 }
             } catch (Exception e) {
-                data.add(new dataTemplate(getString(R.string.monthly_not_avail), "", "Please try again later", "", false));
+                data.add(new dataTemplate(getString(R.string.monthly_not_avail), "", getString(R.string.try_again_later), "", false));
                 e.printStackTrace();
             }
             adapter = new rankingAdapter(data, getApplicationContext());

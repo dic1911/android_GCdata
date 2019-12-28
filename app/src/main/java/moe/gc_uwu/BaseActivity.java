@@ -16,7 +16,7 @@ public class BaseActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        int mode = (getIntent().getExtras() != null) ? getIntent().getExtras().getInt("mode") : -1;
+        int mode = (getIntent().hasExtra("mode")) ? getIntent().getExtras().getInt("mode") : -1;
 
         if (id == R.id.nav_global) {
             Intent intent = new Intent(this, GlobalRankActivity.class);
