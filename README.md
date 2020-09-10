@@ -1,6 +1,6 @@
 # GCdata for Android
 
-[Download](https://030.cdpa.nsysu.edu.tw/gcdata/latest.apk)
+[Download](https://github.com/dic1911/android_GCdata/releases/latest)
 
 ### Main purpose
 
@@ -28,6 +28,9 @@
 4. Support multiple NESiCA entry
 
 ### Changelog (since v0.3.6)
+**v0.7.0**
+1. Fix global rankings
+
 **v0.6.0**
 1. Migrate to AndroidX
 2. Bug fix
