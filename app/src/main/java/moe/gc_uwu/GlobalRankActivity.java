@@ -142,14 +142,19 @@ public class GlobalRankActivity extends AppCompatActivity implements AdapterView
                     tmp3 = threadArr[batch].getTitles().item(i).getTextContent(); //title
                     tmp4 = threadArr[batch].getSites().item(i).getTextContent(); //site
                     tmp5 = threadArr[batch].getLoc().item(i).getTextContent(); //location
-                    locId = parseInt(threadArr[batch].getLocId().item(i).getTextContent()); //location id
+                    String locIdStr = threadArr[batch].getLocId().item(i).getTextContent();
+                    locId = parseInt(locIdStr.equals("") ? "-1": locIdStr); //location id
                     if(!dataMap.containsKey(locId)){
                         dataMap.put(locId, new ArrayList<dataTemplate>(20));
                     }
                     dataMap.get(locId).add(new dataTemplate(tmp, tmp2, tmp3, tmp4, tmp5));
 
                     if(!idToLoc.containsKey(locId)){
-                        idToLoc.put(locId, tmp5);
+                        if (locId == -1) {
+                            Log.d("GCdata-rankloc", tmp5);
+                            idToLoc.put(locId, "Unknown");
+                        }
+                        else idToLoc.put(locId, tmp5);
                     }
                 }
                 pages = new String[dataMap.keySet().size()];

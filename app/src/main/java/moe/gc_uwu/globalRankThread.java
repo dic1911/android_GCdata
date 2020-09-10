@@ -14,6 +14,7 @@ import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.CharBuffer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,7 +31,7 @@ public class globalRankThread extends Thread implements Runnable {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     DocumentBuilder builder;
 
-    String url[]={"http://groovecoaster.jp/xml/fmj2100/rank/all/rank_",".xml"};
+    String url[]={"https://groovecoaster.jp/xml/fmj2100/rank/all/rank_",".xml"};
 
     private String tmp;
 
@@ -88,7 +89,8 @@ public class globalRankThread extends Thread implements Runnable {
                 tmp = readStream(in);
                 try {
                     builder = factory.newDocumentBuilder();
-                    Document data = builder.parse(new InputSource(new StringReader(tmp)));
+                    StringReader sr = new StringReader(tmp);
+                    Document data = builder.parse(new InputSource(sr));
                     names = data.getElementsByTagName("player_name");
                     scores = data.getElementsByTagName("score_bi1");
                     titles = data.getElementsByTagName("title");
