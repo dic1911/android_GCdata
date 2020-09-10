@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String repo = "https://030.cdpa.nsysu.edu.tw/git/dic1911/android_GCdata";
+                String repo = "https://hentaku.ddns.net/geetee/dic1911/android_GCdata";
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(repo));
                 startActivity(intent);
@@ -182,11 +182,12 @@ public class MainActivity extends BaseActivity {
         protected String doInBackground(Integer... params) {
             OkHttpClient client = mypageThread.getUnsafeOkHttpClient(new CookieManager());
             Request request;
-            String url = "https://030.cdpa.nsysu.edu.tw/git/dic1911/android_GCdata/raw/branch/master/update.json";
+            String url = "https://hentaku.ddns.net/geetee/dic1911/android_GCdata/raw/branch/master/update.json";
 
             request = new Request.Builder().url(url).build();
             try {
-                res = new JSONObject(client.newCall(request).execute().body().string());
+                String resp = client.newCall(request).execute().body().string();
+                res = new JSONObject(resp.substring(resp.indexOf("{"), resp.lastIndexOf("}") + 1));
             } catch (Exception e) {
                 e.printStackTrace();
             }
