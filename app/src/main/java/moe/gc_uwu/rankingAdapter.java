@@ -31,21 +31,7 @@ public class rankingAdapter extends ArrayAdapter<dataTemplate> implements View.O
 
     @Override
     public void onClick(View v) {
-
-        /*int position=(Integer) v.getTag();
-        Object object= getItem(position);
-        dataTemplate dataModel=(dataTemplate)object;
-
-        switch (v.getId())
-        {
-            case R.id.score:
-                Snackbar.make(v, dataTemplate.getScore(), Snackbar.LENGTH_LONG)
-                        .setAction("No action", null).show();
-                break;
-        }*/
     }
-
-    //private int lastPosition = -1;
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -66,17 +52,11 @@ public class rankingAdapter extends ArrayAdapter<dataTemplate> implements View.O
             viewHolder.score = (TextView) convertView.findViewById(R.id.score_val);
             viewHolder.title = (TextView) convertView.findViewById(R.id.title);
             viewHolder.site = (TextView) convertView.findViewById(R.id.site);
-            //result=convertView;
 
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
-            //result=convertView;
         }
-
-        //Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-        //result.startAnimation(animation);
-        //lastPosition = position;
 
         tmp = URLDecoder.decode(dataModel.getPlayer());
         viewHolder.name.setText(tmp);

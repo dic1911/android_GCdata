@@ -3,7 +3,6 @@ package moe.gc_uwu;
 import android.util.Log;
 
 import org.json.JSONObject;
-import org.w3c.dom.Document;
 
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -12,7 +11,6 @@ import java.net.URL;
 import java.security.cert.CertificateException;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocketFactory;

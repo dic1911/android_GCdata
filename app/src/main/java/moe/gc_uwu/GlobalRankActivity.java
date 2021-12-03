@@ -2,7 +2,7 @@ package moe.gc_uwu;
 
 import android.os.AsyncTask;
 import com.google.android.material.navigation.NavigationView;
-import androidx.core.view.GravityCompat;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;

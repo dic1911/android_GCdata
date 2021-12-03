@@ -1,7 +1,7 @@
 package moe.gc_uwu;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
+
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;

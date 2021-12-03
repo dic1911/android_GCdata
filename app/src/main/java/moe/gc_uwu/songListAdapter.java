@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class songListAdapter extends ArrayAdapter<musicTemplate> implements View.OnClickListener {
